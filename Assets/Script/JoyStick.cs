@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JoyStick : MonoBehaviour
 {
-
+    public static JoyStick instance = null;
     public Transform stick;
     public Vector3 axis;
 
@@ -12,14 +12,22 @@ public class JoyStick : MonoBehaviour
     Vector3 defaultCenter;
     Touch myTouch;
 
+    void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
-        radius = GetComponent<RectTransform>().sizeDelta.x / 4;
+        radius = GetComponent<RectTransform>().sizeDelta.x / 8;
         defaultCenter = stick.position;
     }
+    void Update()
+    {
 
+    }
     public void Move()
     {
+
         Vector3 touchPos = Input.mousePosition;
         axis = (touchPos - defaultCenter).normalized;
 
@@ -33,11 +41,12 @@ public class JoyStick : MonoBehaviour
         {
             stick.position = defaultCenter + axis * Distance;
         }
+        Player.Instance.PS = PlayerState.RUN;
 
-        Player.Instance.PlayMove(axis);
     }
     public void End()
     {
+        Player.Instance.PS = PlayerState.IDEL;
         stick.position = defaultCenter;
     }
 
