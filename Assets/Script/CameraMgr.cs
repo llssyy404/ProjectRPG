@@ -22,6 +22,7 @@ public class CameraMgr : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        player = GameManager.GetInstance().GetPlayer().gameObject;
         originalPos = transform.position;
         CameraShaking = false;
 	}
@@ -62,5 +63,7 @@ public class CameraMgr : MonoBehaviour {
         cameraaPosition.z = player.transform.position.z +offsetZ;
 
         transform.position = Vector3.Lerp(transform.position, cameraaPosition, 5f * Time.deltaTime);
+
+        Camera.main.transform.LookAt(player.transform);
     }
 }

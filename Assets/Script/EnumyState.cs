@@ -22,6 +22,7 @@ public class EnumyState : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        PlayerTrans = GameManager.GetInstance().GetPlayer().transform;
         nav = this.gameObject.GetComponent<NavMeshAgent>();
         cubeWayPoint = new Transform[4];
         cubeWayPoint[0] = wayPoint1;
@@ -73,7 +74,7 @@ public class EnumyState : MonoBehaviour {
                 }
                 break;
             case EnumyBehavState.PATROL:
-                {
+                {                    
                     nav.SetDestination(cubeWayPoint[curWayPoint].transform.position);
                     if (GetDistanceByTargetPosition(cubeWayPoint[curWayPoint].transform.position) < 0.5f && false == IsDestination)
                         IsDestination = true;
