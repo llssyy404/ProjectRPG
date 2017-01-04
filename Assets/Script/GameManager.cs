@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour {
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
 
         // UI load
-        GameObject playSceneUIPrefab = Resources.Load("Prefabs/PlaySceneUI") as GameObject;
+        GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
 
         //player load
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
             PlayerObject.transform.position = new Vector3(0, 0, 0);
             _player = PlayerObject.GetComponent<Player>();            
         }
-        
+
         //if(null != Enemy)
         //{
         //    _enemyStateList = new List<EnumyState>();
@@ -60,6 +60,10 @@ public class GameManager : MonoBehaviour {
         //        _enemyStateList.Add(enumyState);
         //    }
         //}
+
+        SoundManager.GetInstance().PlayLoopBgm("Bgm");
+        SoundManager.GetInstance().PlayOneshotClip("sword");
+        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02",2.0f);
     }
   
 
