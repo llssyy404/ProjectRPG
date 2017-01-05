@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour {
         return _instance;
     }
 
+    private List<Vector3> _wayPoint;
+
     void Awake()
     {
         _instance = this;
@@ -47,6 +49,29 @@ public class GameManager : MonoBehaviour {
             _player = PlayerObject.GetComponent<Player>();            
         }
 
+        if(null != Enemy)
+        {
+            _enemyStateList = new List<EnumyState>();
+            _wayPoint = new List<Vector3>();
+
+            _wayPoint.Add(new Vector3(-127.0f, 1.6f, -132.0f));
+            _wayPoint.Add(new Vector3(-127.0f, 1.6f, -227.0f));
+            _wayPoint.Add(new Vector3(-127.0f, 1.6f, -418.0f));
+            _wayPoint.Add(new Vector3(-288.0f, 1.6f, -420.0f));
+            _wayPoint.Add(new Vector3(-452.0f, 1.6f, -418.0f));
+            _wayPoint.Add(new Vector3(-452.0f, 1.6f, -277.0f));
+            _wayPoint.Add(new Vector3(-452.0f, 1.6f, -132.0f));
+            _wayPoint.Add(new Vector3(-614.0f, 1.6f, -132.0f));
+
+            for (int i = 0; i < _wayPoint.Count; ++i)
+            {
+                GameObject EnemyObject = GameObject.Instantiate(Enemy) as GameObject;
+                EnemyObject.transform.position = _wayPoint[i];
+                EnemyObject.gameObject.name = "Enemy_" + i;
+                var enumyState = EnemyObject.GetComponent<EnumyState>();
+                _enemyStateList.Add(enumyState);
+            }
+        }
         //if(null != Enemy)
         //{
         //    _enemyStateList = new List<EnumyState>();
