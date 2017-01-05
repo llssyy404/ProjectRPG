@@ -20,14 +20,14 @@ public class SoundManager : MonoBehaviour {
         return _instance;
     }
 
-    private AudioListener _listener;
+    
     private AudioSource _source;
     private Dictionary<string, AudioClip> _soundDic;
 
     private void Init()
     {
         DontDestroyOnLoad(this);
-        _listener = this.gameObject.AddComponent<AudioListener>();
+        gameObject.AddComponent<AudioListener>();
         _source = this.gameObject.AddComponent<AudioSource>();
         _source.playOnAwake = false;
         _soundDic = new Dictionary<string, AudioClip>();

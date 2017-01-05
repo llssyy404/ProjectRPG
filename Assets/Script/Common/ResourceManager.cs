@@ -72,7 +72,6 @@ public class ResourceManager : MonoBehaviour {
         while (lifeTime > time)
         {
             time += Time.deltaTime;
-            Debug.Log(time);
             yield return null;
         }
         

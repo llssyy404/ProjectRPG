@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour {
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
 
+    [HideInInspector]
+    public int ScreenWidthSize = 800;
+    [HideInInspector]
+    public int ScreenHeightSize = 600;
 
     public GameObject Player;
     public GameObject Enemy;
@@ -27,6 +31,8 @@ public class GameManager : MonoBehaviour {
         return _instance;
     }
 
+    public PlaySceneUI playsceneUI { get; private set; }
+
     private List<Vector3> _wayPoint;
 
     void Awake()
@@ -40,16 +46,24 @@ public class GameManager : MonoBehaviour {
         // UI load
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
+        playsceneUI = playScene.GetComponent<PlaySceneUI>();
+     
+    }
+  
 
+	void Start () 
+    {
         //player load
         if (null != Player)
         {
             GameObject PlayerObject = GameObject.Instantiate(Player) as GameObject;
             PlayerObject.transform.position = new Vector3(0, 0, 0);
-            _player = PlayerObject.GetComponent<Player>();            
+            PlayerObject.AddComponent<ObjectUI>();
+            _player = PlayerObject.GetComponent<Player>();
         }
 
-        if(null != Enemy)
+        //enemy load
+        if (null != Enemy)
         {
             _enemyStateList = new List<EnumyState>();
             _wayPoint = new List<Vector3>();
@@ -68,32 +82,16 @@ public class GameManager : MonoBehaviour {
                 GameObject EnemyObject = GameObject.Instantiate(Enemy) as GameObject;
                 EnemyObject.transform.position = _wayPoint[i];
                 EnemyObject.gameObject.name = "Enemy_" + i;
+                EnemyObject.AddComponent<ObjectUI>();
                 var enumyState = EnemyObject.GetComponent<EnumyState>();
                 _enemyStateList.Add(enumyState);
             }
         }
-        //if(null != Enemy)
-        //{
-        //    _enemyStateList = new List<EnumyState>();
 
-        //    for (int i=0;i<8;++i)
-        //    {
-        //        GameObject EnemyObject = GameObject.Instantiate(Enemy) as GameObject;
-        //        EnemyObject.transform.position = new Vector3(i * 20, 0 , i*20);
-        //        EnemyObject.gameObject.name = "Enemy_" + i;
-        //        var enumyState = EnemyObject.GetComponent<EnumyState>();
-        //        _enemyStateList.Add(enumyState);
-        //    }
-        //}
 
         SoundManager.GetInstance().PlayLoopBgm("Bgm");
         SoundManager.GetInstance().PlayOneshotClip("sword");
-        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02",2.0f);
-    }
-  
-
-	void Start () {
-		
+        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
 	
 	// Update is called once per frame
