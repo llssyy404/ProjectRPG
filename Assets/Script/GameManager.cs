@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour 
+{
 
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
 
-    [HideInInspector]
-    public int ScreenWidthSize = 800;
-    [HideInInspector]
-    public int ScreenHeightSize = 600;
+    
+  
 
     public GameObject Player;
     public GameObject Enemy;
@@ -42,7 +41,7 @@ public class GameManager : MonoBehaviour {
 
         //map load
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
-
+        
         // UI load
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
@@ -98,4 +97,16 @@ public class GameManager : MonoBehaviour {
 	void Update () {
 		
 	}
+    
+    public void GetJoystickVector(Vector3 pos)
+    {
+
+    }
+
+    public void SetJoystickVector(Vector3 pos)
+    {
+
+    }
+    
+
 }
