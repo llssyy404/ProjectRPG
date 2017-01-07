@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class JoyStick : MonoBehaviour
 {
-    public static JoyStick instance = null;
     public Transform stick;
     public Vector3 axis;
 
@@ -14,10 +13,8 @@ public class JoyStick : MonoBehaviour
 
     private GameManager gameMgr;
 
-    void Awake()
-    {
-        instance = this;
-    }
+    private Player _player;
+
     void Start()
     {
         gameMgr = GameManager.GetInstance();
@@ -46,13 +43,15 @@ public class JoyStick : MonoBehaviour
         }
 
         gameMgr.SetJoystickVector(false, axis);
-        Player.Instance.PS = PlayerState.RUN;
+       // _player.PS = PlayerState.RUN;
+        // Player.Instance.PS = PlayerState.RUN;
 
     }
     public void End()
     {
         gameMgr.SetJoystickVector(true, axis);
-        Player.Instance.PS = PlayerState.IDEL;
+        //_player.PS = PlayerState.IDEL;
+        //Player.Instance.PS = PlayerState.IDEL;
         stick.position = defaultCenter;
     }
 

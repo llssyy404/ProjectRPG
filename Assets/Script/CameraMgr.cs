@@ -20,10 +20,11 @@ public class CameraMgr : MonoBehaviour
 
     Vector3 cameraPosition;
 
-
+    
     // Use this for initialization
     void Start()
     {
+        player = GameManager.GetInstance().Player.gameObject;
         originalPos = transform.position;
         CameraShaking = false;
     }

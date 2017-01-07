@@ -16,8 +16,11 @@ public enum PlayerState
 public class Player : MonoBehaviour
 {
     //싱글톤
-    public static Player Instance { get; private set; }
-
+    private static Player _instance;
+    public static Player GetInstance()
+    {
+        return _instance;
+    }
     public Transform player;
 
     //캐릭터 이동속도
@@ -33,9 +36,10 @@ public class Player : MonoBehaviour
     private bool isDie = false;
 
     private GameManager gameMgr;
+
     void Awake()
     {
-        Instance = this;
+        _instance = this;
     }
 
     void Start()
@@ -118,7 +122,7 @@ public class Player : MonoBehaviour
                     playerAnim.SetBool("IsAttack3", false);
                     break;
                 case PlayerState.DIE:
-                    //playerAnim.SetTrigger("IsDie");
+                    playerAnim.SetTrigger("IsDie");
                     break;
             }
             yield return null;
@@ -127,6 +131,10 @@ public class Player : MonoBehaviour
     //조이스틱으로 캐릭터 움직이기
     public void PlayMove()
     {
+        bool isEnd;
+        Vector3 joyStickVector;
+        joyStickVector = gameMgr.GetJoystickVector()._joystickVector;
+        isEnd = gameMgr.GetJoystickVector()._playerJoystickIsEnd;
         /*
         player.eulerAngles = new Vector3(player.eulerAngles.x,
             Mathf.Atan2(JoyStick.instance.axis.x, JoyStick.instance.axis.y) * Mathf.Rad2Deg, player.eulerAngles.z);
@@ -135,11 +143,14 @@ public class Player : MonoBehaviour
          */
         //bool isEnd = gameMgr.GetJoystickVector
         
-        player.eulerAngles = new Vector3(player.eulerAngles.x,
-             Mathf.Atan2(JoyStick.instance.axis.x, JoyStick.instance.axis.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
-        player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        if(!isEnd)
+        { 
+            player.eulerAngles = new Vector3(player.eulerAngles.x,
+                 Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
+            player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        }
     }
 
     void OnCollisionEnter(Collision coll)

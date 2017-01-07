@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour 
 {
+
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
     {          
         return _instance;
     }
-    
+
     public PlaySceneUI playsceneUI { get; private set; }
 
     private List<Vector3> _wayPoint;
@@ -88,20 +89,25 @@ public class GameManager : MonoBehaviour
         SoundManager.GetInstance().PlayOneshotClip("sword");
         ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-    
-    public void GetJoystickVector(bool isEnd,Vector3 pos)
+
+
+    public class JoystickInfo
     {
-        
+        public bool _playerJoystickIsEnd;
+        public Vector3 _joystickVector;
+    }
+
+    private JoystickInfo _joystickInfo = new JoystickInfo();
+
+    public JoystickInfo GetJoystickVector()
+    {
+        return _joystickInfo;
     }
 
     public void SetJoystickVector(bool isEnd, Vector3 pos)
     {
-
+        _joystickInfo._playerJoystickIsEnd = isEnd;
+        _joystickInfo._joystickVector = pos;
     }
     
 
