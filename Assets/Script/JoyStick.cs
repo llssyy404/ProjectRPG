@@ -12,12 +12,15 @@ public class JoyStick : MonoBehaviour
     Vector3 defaultCenter;
     Touch myTouch;
 
+    private GameManager gameMgr;
+
     void Awake()
     {
         instance = this;
     }
     void Start()
     {
+        gameMgr = GameManager.GetInstance();
         radius = GetComponent<RectTransform>().sizeDelta.x / 8;
         defaultCenter = stick.position;
     }

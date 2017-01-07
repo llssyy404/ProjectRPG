@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour {
     {          
         return _instance;
     }
-
+    
     public PlaySceneUI playsceneUI { get; private set; }
 
     private List<Vector3> _wayPoint;
