@@ -10,9 +10,6 @@ public class GameManager : MonoBehaviour
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
 
-    
-  
-
     public GameObject Player;
     public GameObject Enemy;
 
@@ -98,12 +95,12 @@ public class GameManager : MonoBehaviour
 		
 	}
     
-    public void GetJoystickVector(Vector3 pos)
+    public void GetJoystickVector(bool isEnd,Vector3 pos)
     {
 
     }
 
-    public void SetJoystickVector(Vector3 pos)
+    public void SetJoystickVector(bool isEnd, Vector3 pos)
     {
 
     }
