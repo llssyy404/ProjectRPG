@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMgr : MonoBehaviour {
+public class CameraMgr : MonoBehaviour
+{
 
     public GameObject player;
 
@@ -17,32 +18,32 @@ public class CameraMgr : MonoBehaviour {
     Vector3 originalPos;
     bool CameraShaking;
 
-    Vector3 cameraaPosition;
+    Vector3 cameraPosition;
 
-	// Use this for initialization
-	void Start () 
+
+    // Use this for initialization
+    void Start()
     {
-        player = GameManager.GetInstance().GetPlayer().gameObject;
         originalPos = transform.position;
         CameraShaking = false;
-	}
+    }
 
-	public void ShakeCamera(float shaking)
+    public void ShakeCamera(float shaking)
     {
         shakes = shaking;
         originalPos = transform.position;
         CameraShaking = true;
     }
-  
-	//카메라 shaking
-	void FixedUpdate () 
+
+    //카메라 shaking
+    void FixedUpdate()
     {
         if (CameraShaking)
         {
             if (shakes > 0)
             {
                 transform.localPosition = originalPos + Random.insideUnitSphere * shakeAmout;
-              //  transform.position += new Vector3(0f, 0f, -30f);
+                //  transform.position += new Vector3(0f, 0f, -30f);
 
                 shakes -= Time.deltaTime * decreaseFactor;
             }
@@ -53,17 +54,15 @@ public class CameraMgr : MonoBehaviour {
                 CameraShaking = false;
             }
         }
-	}
+    }
 
     //카메라 move
     void LateUpdate()
     {
-        cameraaPosition.x = player.transform.position.x +offsetX;
-        cameraaPosition.y = player.transform.position.y +offsetY;
-        cameraaPosition.z = player.transform.position.z +offsetZ;
+        cameraPosition.x = player.transform.position.x + offsetX;
+        cameraPosition.y = player.transform.position.y + offsetY;
+        cameraPosition.z = player.transform.position.z + offsetZ;
 
-        transform.position = Vector3.Lerp(transform.position, cameraaPosition, 5f * Time.deltaTime);
-
-        Camera.main.transform.LookAt(player.transform);
+        transform.position = Vector3.Lerp(transform.position, cameraPosition, 5f * Time.deltaTime);
     }
 }
