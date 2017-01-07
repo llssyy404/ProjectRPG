@@ -44,11 +44,14 @@ public class JoyStick : MonoBehaviour
         {
             stick.position = defaultCenter + axis * Distance;
         }
+
+        gameMgr.SetJoystickVector(false, axis);
         Player.Instance.PS = PlayerState.RUN;
 
     }
     public void End()
     {
+        gameMgr.SetJoystickVector(true, axis);
         Player.Instance.PS = PlayerState.IDEL;
         stick.position = defaultCenter;
     }

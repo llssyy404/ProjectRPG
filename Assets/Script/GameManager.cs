@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour 
 {
-
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
@@ -97,7 +96,7 @@ public class GameManager : MonoBehaviour
     
     public void GetJoystickVector(bool isEnd,Vector3 pos)
     {
-
+        
     }
 
     public void SetJoystickVector(bool isEnd, Vector3 pos)

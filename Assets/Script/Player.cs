@@ -15,7 +15,6 @@ public enum PlayerState
 
 public class Player : MonoBehaviour
 {
-
     //싱글톤
     public static Player Instance { get; private set; }
 
@@ -33,19 +32,22 @@ public class Player : MonoBehaviour
     //플레이어 사망여부
     private bool isDie = false;
 
-
+    private GameManager gameMgr;
     void Awake()
     {
         Instance = this;
     }
+
     void Start()
     {
+        gameMgr = GameManager.GetInstance();
         PS = PlayerState.IDEL;
         StartCoroutine(this.CheckPlayerState());
     }
+
     void Update()
     {
-
+        PlayMove();
         if (Input.GetKeyDown(KeyCode.Q))
         {
             PS = PlayerState.ATTACK1;
@@ -66,7 +68,9 @@ public class Player : MonoBehaviour
         {
             PS = PlayerState.DIE;
         }
+
     }
+
     IEnumerator CheckPlayerState()
     {
         while (!isDie)
@@ -86,7 +90,8 @@ public class Player : MonoBehaviour
                     playerAnim.SetBool("IsAttack2", false);
                     playerAnim.SetBool("IsAttack3", false);
                     playerAnim.SetBool("IsAttack4", false);
-                    PlayMove();
+               
+                   
                     break;
                 case PlayerState.ATTACK1:
                     playerAnim.SetBool("IsAttack", true);
@@ -122,10 +127,19 @@ public class Player : MonoBehaviour
     //조이스틱으로 캐릭터 움직이기
     public void PlayMove()
     {
+        /*
         player.eulerAngles = new Vector3(player.eulerAngles.x,
             Mathf.Atan2(JoyStick.instance.axis.x, JoyStick.instance.axis.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
         player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+         */
+        //bool isEnd = gameMgr.GetJoystickVector
+        
+        player.eulerAngles = new Vector3(player.eulerAngles.x,
+             Mathf.Atan2(JoyStick.instance.axis.x, JoyStick.instance.axis.y) * Mathf.Rad2Deg, player.eulerAngles.z);
+
+        player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+
     }
 
     void OnCollisionEnter(Collision coll)
