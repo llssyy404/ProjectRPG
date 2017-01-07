@@ -89,20 +89,25 @@ public class GameManager : MonoBehaviour
         SoundManager.GetInstance().PlayOneshotClip("sword");
         ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-    
-    public void GetJoystickVector(bool isEnd,Vector3 pos)
-    {
 
+
+    public class JoystickInfo
+    {
+        public bool _playerJoystickIsEnd;
+        public Vector3 _joystickVector;
+    }
+
+    private JoystickInfo _joystickInfo;
+
+    public JoystickInfo GetJoystickVector()
+    {
+        return _joystickInfo;
     }
 
     public void SetJoystickVector(bool isEnd, Vector3 pos)
     {
-
+        _joystickInfo._playerJoystickIsEnd = isEnd;
+        _joystickInfo._joystickVector = pos;
     }
     
 
