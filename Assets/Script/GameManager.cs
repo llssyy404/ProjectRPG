@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour 
+{
 
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
-
-    [HideInInspector]
-    public int ScreenWidthSize = 800;
-    [HideInInspector]
-    public int ScreenHeightSize = 600;
 
     public GameObject Player;
     public GameObject Enemy;
@@ -42,7 +38,7 @@ public class GameManager : MonoBehaviour {
 
         //map load
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
-
+        
         // UI load
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
@@ -57,7 +53,7 @@ public class GameManager : MonoBehaviour {
         if (null != Player)
         {
             GameObject PlayerObject = GameObject.Instantiate(Player) as GameObject;
-            PlayerObject.transform.position = new Vector3(0, 0, 0);
+            PlayerObject.transform.position = new Vector3(0, 1.75f, -20.0f);
             PlayerObject.AddComponent<ObjectUI>();
             _player = PlayerObject.GetComponent<Player>();
         }
@@ -93,9 +89,32 @@ public class GameManager : MonoBehaviour {
         SoundManager.GetInstance().PlayOneshotClip("sword");
         ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+
+    public class JoystickInfo
+    {
+        public JoystickInfo()
+        {
+            _playerJoystickIsEnd = true;
+            _joystickVector = Vector3.zero;
+        }
+
+        public bool _playerJoystickIsEnd;
+        public Vector3 _joystickVector;
+    }
+
+    private JoystickInfo _joystickInfo = new JoystickInfo();
+
+    public JoystickInfo GetJoystickVector()
+    {
+        return _joystickInfo;
+    }
+
+    public void SetJoystickVector(bool isEnd, Vector3 pos)
+    {
+        _joystickInfo._playerJoystickIsEnd = isEnd;
+        _joystickInfo._joystickVector = pos;
+    }
+    
+
 }

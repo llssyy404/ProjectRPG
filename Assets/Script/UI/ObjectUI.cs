@@ -20,9 +20,9 @@ public class ObjectUI : MonoBehaviour {
 	void Update () 
     {
         Vector3 pos = this.transform.position;
-        pos.y -= 5;
+        pos.y += 5;
         Vector3 viewPos = Camera.main.WorldToViewportPoint(pos);
-        Vector2 anchorPos = new Vector2(viewPos.x * GameManager.GetInstance().ScreenWidthSize, viewPos.y * GameManager.GetInstance().ScreenHeightSize);
+        Vector2 anchorPos = new Vector2(viewPos.x * 1280, viewPos.y * 720);
         hpBarRectTransform.anchoredPosition = anchorPos;
 	}
 
