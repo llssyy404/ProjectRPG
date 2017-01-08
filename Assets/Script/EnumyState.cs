@@ -51,8 +51,12 @@ public class EnumyState : MonoBehaviour
     {
         if(coll.gameObject.tag == "Player" )
         {
+            SphereCollider scoll = GetComponent<SphereCollider>();
+            ResourceManager.GetInstance().MakeParticle(scoll.transform.position, "Effect_02", 2.0f);
+            SoundManager.GetInstance().PlayOneshotClip("sword");
             Player player = GameManager.GetInstance().GetPlayer();
             player.DamageHp(_demage);
+            Damaged(_demage);
             //Debug.Log(player.hp);
         }
     }
@@ -177,6 +181,7 @@ public class EnumyState : MonoBehaviour
     void Damaged(int damage)
     {
         _hp -= damage;
+        _objectUI.DamageHp(damage);
         if (0 > _hp)
             _hp = 0;
     }
@@ -184,5 +189,12 @@ public class EnumyState : MonoBehaviour
     public int hp
     {
         get { return _hp; }
+    }
+
+    private ObjectUI _objectUI;
+    public void SetHpBar(ObjectUI objectUI)
+    {
+        _objectUI = objectUI;
+        _objectUI.Init(_hp);
     }
 }

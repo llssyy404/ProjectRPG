@@ -83,8 +83,8 @@ public class GameManager : MonoBehaviour
                 EnemyObject.transform.position = _wayPoint[i];
                 EnemyObject.gameObject.name = "Enemy_" + i;
                 ObjectUI objUI = EnemyObject.AddComponent<ObjectUI>();
-                objUI.Init(100);
                 var enumyState = EnemyObject.GetComponent<EnumyState>();
+                enumyState.SetHpBar(objUI);
                 _enemyStateList.Add(enumyState);
             }
         }
