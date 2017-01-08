@@ -35,6 +35,9 @@ public class Player : MonoBehaviour
     //플레이어 사망여부
     private bool isDie = false;
 
+    // 플레이어 체력
+    private int hp = 100;
+
     private GameManager gameMgr;
 
     void Awake()
@@ -163,6 +166,14 @@ public class Player : MonoBehaviour
             //카메라 쉐이킹
             Camera.main.GetComponent<CameraMgr>().ShakeCamera(0.5f);
         }
+    }
+
+    public void DamageHp(int damage)
+    {
+        hp -= damage;
+           
+        if(0 >= hp)
+            PS = PlayerState.DIE;
     }
 
 }
