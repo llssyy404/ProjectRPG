@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnumyState : MonoBehaviour
 {
+    //private EnemyInfo _enemyInfo;
     enum EnumyBehavState { IDLE = 0, CHASE, PATROL, ATTACK, DEMAGED, DIE };
     EnumyBehavState eEnumyState = EnumyBehavState.IDLE;
     float patrolSpeed = 5.0f;
@@ -45,6 +46,16 @@ public class EnumyState : MonoBehaviour
         nav.speed = patrolSpeed;
     }
 
+    private void OnTriggerEnter(Collider coll)
+    {
+        if(coll.gameObject.tag == "Player" )
+        {
+            Player player = GameManager.GetInstance().GetPlayer();
+            player.hp -= 10;
+            Debug.Log(player.hp);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -60,6 +71,14 @@ public class EnumyState : MonoBehaviour
         SetEnumyStateByPlayerPos();         // 적 state 설정
         SetDestinationByEnumyState();       // state에 따른 목표위치 설정
         //Debug.Log(transform.position);
+    }
+
+    void Init()
+    {
+        IsDestination = true;
+        nav.speed = patrolSpeed;
+        hp = 100;
+        curWayPoint = 0;
     }
 
     void WayPointInit()
@@ -118,6 +137,7 @@ public class EnumyState : MonoBehaviour
     void Patroll()
     {
         nav.SetDestination(m_wayPoint[curWayPoint]);
+        nav.speed = patrolSpeed;
         if (GetDistanceByTargetPosition(m_wayPoint[curWayPoint]) < 2.0f && false == IsDestination)
             IsDestination = true;
 
@@ -128,7 +148,6 @@ public class EnumyState : MonoBehaviour
         if (4 == curWayPoint)
             curWayPoint = 0;
 
-        nav.speed = patrolSpeed;
         IsDestination = false;
     }
 
