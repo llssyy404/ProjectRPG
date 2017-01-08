@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         if (null != Player)
         {
             GameObject PlayerObject = GameObject.Instantiate(Player) as GameObject;
-            PlayerObject.transform.position = new Vector3(0, 0, 0);
+            PlayerObject.transform.position = new Vector3(0, 1.75f, -20.0f);
             PlayerObject.AddComponent<ObjectUI>();
             _player = PlayerObject.GetComponent<Player>();
         }
@@ -93,6 +93,12 @@ public class GameManager : MonoBehaviour
 
     public class JoystickInfo
     {
+        public JoystickInfo()
+        {
+            _playerJoystickIsEnd = true;
+            _joystickVector = Vector3.zero;
+        }
+
         public bool _playerJoystickIsEnd;
         public Vector3 _joystickVector;
     }

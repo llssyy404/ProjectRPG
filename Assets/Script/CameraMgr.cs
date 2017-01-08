@@ -24,7 +24,7 @@ public class CameraMgr : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        player = GameManager.GetInstance().Player.gameObject;
+        player = GameManager.GetInstance().GetPlayer().gameObject;
         originalPos = transform.position;
         CameraShaking = false;
     }
