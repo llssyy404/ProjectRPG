@@ -20,7 +20,8 @@ public class EnumyState : MonoBehaviour
     public Transform PlayerTrans;
     //public Transform wayPointFirst;
     Vector3 wayPointFirst;
-    public int hp = 100;
+    private int _hp = 100;
+    private int _demage = 10;
     private const float m_wayPointWidth = 112.0f;
     private const float m_wayPointHeight = 97.0f;
     private const string m_strIsChase = "IsChase";
@@ -51,7 +52,7 @@ public class EnumyState : MonoBehaviour
         if(coll.gameObject.tag == "Player" )
         {
             Player player = GameManager.GetInstance().GetPlayer();
-            //player.hp -= 10;
+            player.DamageHp(_demage);
             //Debug.Log(player.hp);
         }
     }
@@ -59,7 +60,7 @@ public class EnumyState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (0 >= hp && EnumyBehavState.DIE != eEnumyState)
+        if (0 >= _hp && EnumyBehavState.DIE != eEnumyState)
         {
             anim.SetBool("IsChase", false);
             anim.Play("Die");
@@ -77,7 +78,7 @@ public class EnumyState : MonoBehaviour
     {
         IsDestination = true;
         nav.speed = patrolSpeed;
-        hp = 100;
+        _hp = 100;
         curWayPoint = 0;
     }
 
@@ -171,5 +172,17 @@ public class EnumyState : MonoBehaviour
                 break;
             default: break;
         }
+    }
+
+    void Damaged(int damage)
+    {
+        _hp -= damage;
+        if (0 > _hp)
+            _hp = 0;
+    }
+
+    public int hp
+    {
+        get { return _hp; }
     }
 }
