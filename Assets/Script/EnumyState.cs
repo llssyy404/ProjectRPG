@@ -51,8 +51,8 @@ public class EnumyState : MonoBehaviour
         if(coll.gameObject.tag == "Player" )
         {
             Player player = GameManager.GetInstance().GetPlayer();
-            player.hp -= 10;
-            Debug.Log(player.hp);
+            //player.hp -= 10;
+            //Debug.Log(player.hp);
         }
     }
 
