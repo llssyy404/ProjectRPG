@@ -148,12 +148,16 @@ public class Player : MonoBehaviour
         
 
         if(!isEnd)
-        { 
+        {
+            PS = PlayerState.RUN;
             player.eulerAngles = new Vector3(player.eulerAngles.x,
                  Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
             player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
         }
+        else
+            PS = PlayerState.IDEL;
+
     }
 
     void OnCollisionEnter(Collision coll)
@@ -171,9 +175,17 @@ public class Player : MonoBehaviour
     public void DamageHp(int damage)
     {
         hp -= damage;
-           
+        _objectUI.DamageHp(damage);
+        Debug.Log(hp);
+
         if(0 >= hp)
             PS = PlayerState.DIE;
     }
 
+
+    private ObjectUI _objectUI;
+    public void SetHpBar(ObjectUI objectUI)
+    {
+        _objectUI = objectUI;
+    }
 }

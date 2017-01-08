@@ -54,8 +54,12 @@ public class GameManager : MonoBehaviour
         {
             GameObject PlayerObject = GameObject.Instantiate(Player) as GameObject;
             PlayerObject.transform.position = new Vector3(0, 1.75f, -20.0f);
-            PlayerObject.AddComponent<ObjectUI>();
+            ObjectUI objUI = PlayerObject.AddComponent<ObjectUI>();
+            objUI.Init(100);
             _player = PlayerObject.GetComponent<Player>();
+            _player.SetHpBar(objUI);
+            
+            
         }
 
         //enemy load
@@ -78,7 +82,8 @@ public class GameManager : MonoBehaviour
                 GameObject EnemyObject = GameObject.Instantiate(Enemy) as GameObject;
                 EnemyObject.transform.position = _wayPoint[i];
                 EnemyObject.gameObject.name = "Enemy_" + i;
-                EnemyObject.AddComponent<ObjectUI>();
+                ObjectUI objUI = EnemyObject.AddComponent<ObjectUI>();
+                objUI.Init(100);
                 var enumyState = EnemyObject.GetComponent<EnumyState>();
                 _enemyStateList.Add(enumyState);
             }
