@@ -38,12 +38,28 @@ public class CarCollision : MonoBehaviour {
 			if (col.tag == "Car") {
 				Debug.Log ("asd");
 
-				//랜덤돌려서 방향을 정함.
-				//방향 전환하고 나서 상태를 패트롤로 돌려줌
-				PatrolSpeed = Random.Range (10, 30);
-				gameObject.transform.Rotate (0, 180, 0);
+                //랜덤돌려서 방향을 정함.
+                //방향 전환하고 나서 상태를 패트롤로 돌려줌
+                //PatrolSpeed = Random.Range (10, 30);
+                //gameObject.transform.Rotate (0, 180, 0);
+                StartCoroutine(RotationCar());
 			}
 		}
 
 	}
+
+    IEnumerator RotationCar()
+    {
+        float time = 0;
+
+        while(time < 1)
+        {
+            time += Time.deltaTime;            
+            gameObject.transform.Rotate(0, 90 * Time.deltaTime, 0);
+            yield return null;
+        }
+        
+       Debug.Log("CompleteRotate");
+
+    }
 }
