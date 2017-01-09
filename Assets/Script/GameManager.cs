@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
+    public enum state { Title, Play };
+    public state GameState { get; private set; }
+
+    private CameraMgr _cameraMgr;
 
     public GameObject Player;
     public GameObject Enemy;
@@ -43,7 +47,14 @@ public class GameManager : MonoBehaviour
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
         playsceneUI = playScene.GetComponent<PlaySceneUI>();
-     
+
+
+        // cameraMgr Connect
+        _cameraMgr = Camera.main.GetComponent<CameraMgr>();
+
+
+        GameState = state.Title;
+
     }
   
 
@@ -121,5 +132,14 @@ public class GameManager : MonoBehaviour
         _joystickInfo._joystickVector = pos;
     }
     
+    public void SetState(state state)
+    {
+        GameState = state;
+
+        if (state == state.Play)
+        {
+            _cameraMgr.SetCameraState(CameraMgr.state.Play);
+        }        
+    }
 
 }
