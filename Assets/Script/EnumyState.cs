@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnumyState : MonoBehaviour
 {
+    //private EnemyInfo _enemyInfo;
     enum EnumyBehavState { IDLE = 0, CHASE, PATROL, ATTACK, DEMAGED, DIE };
     EnumyBehavState eEnumyState = EnumyBehavState.IDLE;
     float patrolSpeed = 5.0f;
@@ -19,7 +20,8 @@ public class EnumyState : MonoBehaviour
     public Transform PlayerTrans;
     //public Transform wayPointFirst;
     Vector3 wayPointFirst;
-    public int hp = 100;
+    private int _hp = 100;
+    private int _demage = 10;
     private const float m_wayPointWidth = 112.0f;
     private const float m_wayPointHeight = 97.0f;
     private const string m_strIsChase = "IsChase";
@@ -45,10 +47,24 @@ public class EnumyState : MonoBehaviour
         nav.speed = patrolSpeed;
     }
 
+    private void OnTriggerEnter(Collider coll)
+    {
+        if(coll.gameObject.tag == "Player" )
+        {
+            SphereCollider scoll = GetComponent<SphereCollider>();
+            ResourceManager.GetInstance().MakeParticle(scoll.transform.position, "Effect_02", 2.0f);
+            SoundManager.GetInstance().PlayOneshotClip("sword");
+            Player player = GameManager.GetInstance().GetPlayer();
+            player.DamageHp(_demage);
+            Damaged(_demage);
+            //Debug.Log(player.hp);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (0 >= hp && EnumyBehavState.DIE != eEnumyState)
+        if (0 >= _hp && EnumyBehavState.DIE != eEnumyState)
         {
             anim.SetBool("IsChase", false);
             anim.Play("Die");
@@ -60,6 +76,14 @@ public class EnumyState : MonoBehaviour
         SetEnumyStateByPlayerPos();         // 적 state 설정
         SetDestinationByEnumyState();       // state에 따른 목표위치 설정
         //Debug.Log(transform.position);
+    }
+
+    void Init()
+    {
+        IsDestination = true;
+        nav.speed = patrolSpeed;
+        _hp = 100;
+        curWayPoint = 0;
     }
 
     void WayPointInit()
@@ -118,6 +142,7 @@ public class EnumyState : MonoBehaviour
     void Patroll()
     {
         nav.SetDestination(m_wayPoint[curWayPoint]);
+        nav.speed = patrolSpeed;
         if (GetDistanceByTargetPosition(m_wayPoint[curWayPoint]) < 2.0f && false == IsDestination)
             IsDestination = true;
 
@@ -128,7 +153,6 @@ public class EnumyState : MonoBehaviour
         if (4 == curWayPoint)
             curWayPoint = 0;
 
-        nav.speed = patrolSpeed;
         IsDestination = false;
     }
 
@@ -152,5 +176,25 @@ public class EnumyState : MonoBehaviour
                 break;
             default: break;
         }
+    }
+
+    void Damaged(int damage)
+    {
+        _hp -= damage;
+        _objectUI.DamageHp(damage);
+        if (0 > _hp)
+            _hp = 0;
+    }
+
+    public int hp
+    {
+        get { return _hp; }
+    }
+
+    private ObjectUI _objectUI;
+    public void SetHpBar(ObjectUI objectUI)
+    {
+        _objectUI = objectUI;
+        _objectUI.Init(_hp);
     }
 }
