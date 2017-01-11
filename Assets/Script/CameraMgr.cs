@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class CameraMgr : MonoBehaviour
 {
+    public enum state { Title, Play };
+    public state CameraState { get; private set; }
+
+    private Vector3 startPlayPos = new Vector3(0, 26.75f, -55);
+    private Vector3 startPlayRot = new Vector3(35, 0.0f, 0.0f);
+
+    private Vector3 startTitlePos = new Vector3(25, 35, -300);
+    private Vector3 startTitleRot = new Vector3(15, 270, 0.0f);
 
     public GameObject player;
 
@@ -20,10 +28,14 @@ public class CameraMgr : MonoBehaviour
 
     Vector3 cameraPosition;
 
-    
+
     // Use this for initialization
     void Start()
     {
+        CameraState = state.Title;
+        this.transform.position = startTitlePos;
+        this.transform.localRotation = Quaternion.Euler(startTitleRot);
+
         player = GameManager.GetInstance().GetPlayer().gameObject;
         originalPos = transform.position;
         CameraShaking = false;
@@ -38,6 +50,32 @@ public class CameraMgr : MonoBehaviour
 
     //카메라 shaking
     void FixedUpdate()
+    {
+        if (CameraState == state.Play)
+            PlayCameraMove();
+        else if (CameraState == state.Title)
+            TitleCameraMove();
+
+    }
+
+    //카메라 move
+    void LateUpdate()
+    {
+        if (CameraState == state.Title)
+            return;
+
+        cameraPosition.x = player.transform.position.x + offsetX;
+        cameraPosition.y = player.transform.position.y + offsetY;
+        cameraPosition.z = player.transform.position.z + offsetZ;
+        transform.position = Vector3.Lerp(transform.position, cameraPosition, 5f * Time.deltaTime);
+    }
+
+    void TitleCameraMove()
+    {
+        transform.Translate(-Time.deltaTime, 0, 0, Space.World);
+    }
+
+    void PlayCameraMove()
     {
         if (CameraShaking)
         {
@@ -57,13 +95,21 @@ public class CameraMgr : MonoBehaviour
         }
     }
 
-    //카메라 move
-    void LateUpdate()
+    public void SetCameraState(state state)
     {
-        cameraPosition.x = player.transform.position.x + offsetX;
-        cameraPosition.y = player.transform.position.y + offsetY;
-        cameraPosition.z = player.transform.position.z + offsetZ;
+        CameraState = state;
 
-        transform.position = Vector3.Lerp(transform.position, cameraPosition, 5f * Time.deltaTime);
+        if (CameraState == state.Play)
+        {
+            this.transform.position = startPlayPos;
+            this.transform.localRotation = Quaternion.Euler(startPlayRot);
+        }
+        else if (CameraState == state.Title)
+        {
+            this.transform.position = startTitlePos;
+            this.transform.localRotation = Quaternion.Euler(startTitleRot);
+        }
+           
     }
+    
 }
