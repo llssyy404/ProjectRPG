@@ -5,51 +5,49 @@ using UnityEngine.AI;
 
 public class EnumyState : MonoBehaviour
 {
-    //private EnemyInfo _enemyInfo;
-    enum EnumyBehavState { IDLE = 0, CHASE, PATROL, ATTACK, DEMAGED, DIE };
-    EnumyBehavState eEnumyState = EnumyBehavState.IDLE;
-    float patrolSpeed = 5.0f;
-    float chaseSpeed = 7.0f;
-    Vector3[] m_wayPoint;
+    enum EnemyBehavState { IDLE = 0, CHASE, PATROL, ATTACK, DEMAGED, DIE };
+    EnemyBehavState eEnemyState = EnemyBehavState.IDLE;
+    Vector3[] wayPoint;
     int curWayPoint = 0;
-    bool IsDestination = true;
+    bool isDestination = true;
+    int wayPointCount = 4;
+    private Transform playerTrans;
     private NavMeshAgent nav;
 
     private Animator anim;
 
-    public Transform PlayerTrans;
-    //public Transform wayPointFirst;
-    Vector3 wayPointFirst;
     private int _hp = 100;
     private int _demage = 10;
-    private const float m_wayPointWidth = 112.0f;
-    private const float m_wayPointHeight = 97.0f;
-    private const string m_strIsChase = "IsChase";
-    private const string m_strIsAttack = "IsAttack";
-    private const string m_strDie = "Die";
-    private const string m_strWalk = "Wake";
-    private const string m_strRun = "Run";
-    private const string m_strAttack = "Attack";
+    private const int maxHP = 100;
+    private const float patrolSpeed = 5.0f;
+    private const float chaseSpeed = 7.0f;
+    private const float chaseDistance = 50.0f;
+    private const float attackDistance = 5.0f;
+    private const float destDistance = 2.0f;
+    private const float wayPointWidth = 112.0f;
+    private const float wayPointHeight = 97.0f;
+    private const string strIsChase = "IsChase";
+    private const string strIsAttack = "IsAttack";
+    private const string strDie = "Die";
+    private const string strWalk = "Wake";
+    private const string strRun = "Run";
+    private const string strAttack = "Attack";
 
     // Use this for initialization
     void Start()
     {
-        PlayerTrans = GameManager.GetInstance().GetPlayer().transform;
-        wayPointFirst = transform.position;
+        playerTrans = GameManager.GetInstance().GetPlayer().transform;
+        wayPoint = new Vector3[wayPointCount];
+        eEnemyState = EnemyBehavState.PATROL;
         anim = GetComponent<Animator>();
         nav = this.gameObject.GetComponent<NavMeshAgent>();
-        m_wayPoint = new Vector3[4];
-        m_wayPoint[0] = wayPointFirst;
-        m_wayPoint[1] = new Vector3(wayPointFirst.x, wayPointFirst.y, wayPointFirst.z + m_wayPointHeight);
-        m_wayPoint[2] = new Vector3(wayPointFirst.x + m_wayPointWidth, wayPointFirst.y, wayPointFirst.z + m_wayPointHeight);
-        m_wayPoint[3] = new Vector3(wayPointFirst.x + m_wayPointWidth, wayPointFirst.y, wayPointFirst.z);
-        eEnumyState = EnumyBehavState.PATROL;
-        nav.speed = patrolSpeed;
+        WayPointInit();
+        Init();
     }
 
     private void OnTriggerEnter(Collider coll)
     {
-        if(coll.gameObject.tag == "Player" )
+        if (coll.gameObject.tag == "Player")
         {
             SphereCollider scoll = GetComponent<SphereCollider>();
             ResourceManager.GetInstance().MakeParticle(scoll.transform.position, "Effect_02", 2.0f);
@@ -57,41 +55,66 @@ public class EnumyState : MonoBehaviour
             Player player = GameManager.GetInstance().GetPlayer();
             player.DamageHp(_demage);
             Damaged(_demage);
-            //Debug.Log(player.hp);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (0 >= _hp && EnumyBehavState.DIE != eEnumyState)
-        {
-            anim.SetBool("IsChase", false);
-            anim.Play("Die");
-            eEnumyState = EnumyBehavState.DIE;
-            nav.Stop();
-            return;
-        }
-
-        SetEnumyStateByPlayerPos();         // 적 state 설정
-        SetDestinationByEnumyState();       // state에 따른 목표위치 설정
-        //Debug.Log(transform.position);
+        SetEnemyStateByPlayerPos();         // 적 state 설정
+        SetDestinationByEnemyState();       // state에 따른 목표위치 설정
     }
 
+    //
+    void SetEnemyStateByPlayerPos()
+    {
+        if (eEnemyState == EnemyBehavState.DIE)
+            return;
+
+        float distance = GetDistanceByTargetPosition(playerTrans.position);
+        if (distance > chaseDistance)
+        {
+            StateTransition(EnemyBehavState.PATROL, patrolSpeed, false, false, strWalk);
+        }
+        else if (distance < attackDistance)
+        {
+            StateTransition(EnemyBehavState.ATTACK, 0.0f, false, true, strAttack);
+        }
+        else
+        {
+            StateTransition(EnemyBehavState.CHASE, chaseSpeed, true, false, strRun);
+        }
+    }
+
+    void SetDestinationByEnemyState()
+    {
+        if (eEnemyState == EnemyBehavState.DIE)
+            return;
+
+        switch (eEnemyState)
+        {
+            case EnemyBehavState.CHASE: nav.SetDestination(playerTrans.position); break;
+            case EnemyBehavState.PATROL: Patroll(); break;
+            default: break;
+        }
+    }
+
+    //
     void Init()
     {
-        IsDestination = true;
+        isDestination = true;
+        eEnemyState = EnemyBehavState.PATROL;
         nav.speed = patrolSpeed;
-        _hp = 100;
+        _hp = maxHP;
         curWayPoint = 0;
     }
 
     void WayPointInit()
     {
-        m_wayPoint[0] = wayPointFirst;
-        m_wayPoint[1] = new Vector3(wayPointFirst.x, wayPointFirst.y, wayPointFirst.z + m_wayPointHeight);
-        m_wayPoint[2] = new Vector3(wayPointFirst.x + m_wayPointWidth, wayPointFirst.y, wayPointFirst.z + m_wayPointHeight);
-        m_wayPoint[3] = new Vector3(wayPointFirst.x + m_wayPointWidth, wayPointFirst.y, wayPointFirst.z);
+        wayPoint[0] = transform.position;
+        wayPoint[1] = new Vector3(transform.position.x, transform.position.y, transform.position.z + wayPointHeight);
+        wayPoint[2] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z + wayPointHeight);
+        wayPoint[3] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z);
     }
 
     float GetDistanceByTargetPosition(Vector3 TargetPosition)
@@ -101,91 +124,55 @@ public class EnumyState : MonoBehaviour
 
     void SetAnimation(bool isChase, bool isAttack, string strPlayAnim)
     {
-        anim.SetBool(m_strIsChase, isChase);
-        anim.SetBool(m_strIsAttack, isAttack);
+        anim.SetBool(strIsChase, isChase);
+        anim.SetBool(strIsAttack, isAttack);
         anim.Play(strPlayAnim);
     }
 
-    void SetEnumyStateByPlayerPos()
+    void StateTransition(EnemyBehavState enemyState, float speed, bool isChase, bool isAttack, string strPlayAnim)
     {
-        if (EnumyBehavState.DIE == eEnumyState)
+        if (eEnemyState == enemyState)
             return;
 
-        float distance = GetDistanceByTargetPosition(PlayerTrans.transform.position);
-        if (distance > 50.0f)
-        {
-            if (EnumyBehavState.PATROL == eEnumyState)
-                return;
+        nav.speed = speed;
+        SetAnimation(isChase, isAttack, strPlayAnim);
+        eEnemyState = enemyState;
 
-            SetAnimation(false, false, m_strWalk);
-            eEnumyState = EnumyBehavState.PATROL;
-        }
-        else if (distance < 5.0f)
-        {
-            if (EnumyBehavState.ATTACK == eEnumyState)
-                return;
-
-            SetAnimation(false, true, m_strAttack);
-            nav.speed = 0.0f;
-            eEnumyState = EnumyBehavState.ATTACK;
-        }
-        else
-        {
-            if (EnumyBehavState.CHASE == eEnumyState)
-                return;
-
-            SetAnimation(true, false, m_strRun);
-            eEnumyState = EnumyBehavState.CHASE;
-        }
     }
 
     void Patroll()
     {
-        nav.SetDestination(m_wayPoint[curWayPoint]);
-        nav.speed = patrolSpeed;
-        if (GetDistanceByTargetPosition(m_wayPoint[curWayPoint]) < 2.0f && false == IsDestination)
-            IsDestination = true;
+        nav.SetDestination(wayPoint[curWayPoint]);
+        if (GetDistanceByTargetPosition(wayPoint[curWayPoint]) < destDistance && isDestination == false)
+            isDestination = true;
 
-        if (false == IsDestination)
+        if (isDestination == false)
             return;
 
         ++curWayPoint;
-        if (4 == curWayPoint)
+        if (curWayPoint == wayPointCount)
             curWayPoint = 0;
 
-        IsDestination = false;
-    }
-
-    void SetDestinationByEnumyState()
-    {
-        if (EnumyBehavState.DIE == eEnumyState)
-            return;
-
-        switch (eEnumyState)
-        {
-            case EnumyBehavState.CHASE:
-                {
-                    nav.speed = chaseSpeed;
-                    nav.SetDestination(PlayerTrans.position);
-                }
-                break;
-            case EnumyBehavState.PATROL:
-                {
-                    Patroll();
-                }
-                break;
-            default: break;
-        }
+        isDestination = false;
     }
 
     void Damaged(int damage)
     {
         _hp -= damage;
-        _objectUI.DamageHp(damage);
         if (0 > _hp)
             _hp = 0;
+
+        _objectUI.DamageHp(damage);
+
+        if (_hp <= 0 && eEnemyState != EnemyBehavState.DIE)
+        {
+            SetAnimation(false, false, strDie);
+            nav.Stop();
+            eEnemyState = EnemyBehavState.DIE;
+        }
     }
 
+    // get set
     public int hp
     {
         get { return _hp; }
