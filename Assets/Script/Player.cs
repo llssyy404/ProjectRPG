@@ -97,8 +97,7 @@ public class Player : MonoBehaviour
                     playerAnim.SetBool("IsAttack2", false);
                     playerAnim.SetBool("IsAttack3", false);
                     playerAnim.SetBool("IsAttack4", false);
-               
-                   
+                      
                     break;
                 case PlayerState.ATTACK1:
                     playerAnim.SetBool("IsAttack", true);
