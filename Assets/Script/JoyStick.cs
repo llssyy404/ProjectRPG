@@ -5,6 +5,7 @@ using UnityEngine;
 public class JoyStick : MonoBehaviour
 {
     public Transform stick;
+    public Transform stickPad;
     public Vector3 axis;
 
     float radius;
@@ -18,12 +19,14 @@ public class JoyStick : MonoBehaviour
     void Start()
     {
         gameMgr = GameManager.GetInstance();
-        radius = GetComponent<RectTransform>().sizeDelta.x / 8;
+        //radius = GetComponent<RectTransform>().sizeDelta.x / 4;
+        radius = stickPad.GetComponent<RectTransform>().sizeDelta.x / 2;
         defaultCenter = stick.position;
+
     }
     void Update()
     {
-
+        
     }
     public void Move()
     {
@@ -42,6 +45,7 @@ public class JoyStick : MonoBehaviour
             stick.position = defaultCenter + axis * Distance;
         }
 
+        //Debug.Log("조이스틱 : " + stick.position + " ... " + radius);
         gameMgr.SetJoystickVector(false, axis);
        // _player.PS = PlayerState.RUN;
         // Player.Instance.PS = PlayerState.RUN;
