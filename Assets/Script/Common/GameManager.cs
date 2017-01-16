@@ -31,6 +31,19 @@ public class GameManager : MonoBehaviour
         return _instance;
     }
 
+    private static bool _initailize = false;
+    public static bool Initialized()
+    {
+        if (false == _initailize)
+        {
+            SceneManager.LoadScene("TestPlayScene");
+            return false;
+        }
+        else
+            return true;
+    }
+
+
     public PlaySceneUI playsceneUI { get; private set; }
 
     private List<Vector3> _wayPoint;
@@ -38,27 +51,41 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         _instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this);        
+        GameState = state.Title;
+        _initailize = true;
 
+        LoadMap();
+    }
+  
+	void Start () 
+    {
+        
+        InitUI();
+        InitPlayer();
+        InitEnemy();
+        InitCamera();
+
+        SoundManager.GetInstance().PlayLoopBgm("Bgm");
+        SoundManager.GetInstance().PlayOneshotClip("sword");
+        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
+	}
+    
+    private void LoadMap()
+    {
         //map load
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
-        
+    }
+
+    private void InitUI()
+    {
         // UI load
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
         playsceneUI = playScene.GetComponent<PlaySceneUI>();
-
-
-        // cameraMgr Connect
-        _cameraMgr = Camera.main.GetComponent<CameraMgr>();
-
-
-        GameState = state.Title;
-
     }
-  
 
-	void Start () 
+    private void InitPlayer()
     {
         //player load
         if (null != Player)
@@ -69,10 +96,17 @@ public class GameManager : MonoBehaviour
             objUI.Init(100);
             _player = PlayerObject.GetComponent<Player>();
             _player.SetHpBar(objUI);
-            
-            
         }
+    }
 
+    private void InitCamera()
+    {
+        // cameraMgr Connect
+        _cameraMgr = Camera.main.GetComponent<CameraMgr>();
+    }
+
+    private void InitEnemy()
+    {
         //enemy load
         if (null != Enemy)
         {
@@ -99,13 +133,7 @@ public class GameManager : MonoBehaviour
                 _enemyStateList.Add(enumyState);
             }
         }
-
-
-        SoundManager.GetInstance().PlayLoopBgm("Bgm");
-        SoundManager.GetInstance().PlayOneshotClip("sword");
-        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
-	}
-
+    }
 
     public class JoystickInfo
     {
@@ -141,5 +169,7 @@ public class GameManager : MonoBehaviour
             _cameraMgr.SetCameraState(CameraMgr.state.Play);
         }        
     }
+    
 
+    
 }

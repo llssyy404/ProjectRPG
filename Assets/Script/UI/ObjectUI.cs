@@ -22,12 +22,19 @@ public class ObjectUI : MonoBehaviour {
         hpbar = GameObject.Instantiate(prefab) as GameObject;
         _hpbarImg = hpbar.transform.GetChild(0).GetComponent<Image>();
         hpBarRectTransform = hpbar.GetComponent<RectTransform>();
-        hpBarRectTransform.SetParent(GameManager.GetInstance().playsceneUI.Panal.transform);        
+        hpBarRectTransform.SetParent(GameManager.GetInstance().playsceneUI.transform);        
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
+        if (GameManager.GetInstance().GameState == GameManager.state.Title)
+        {
+            hpbar.gameObject.SetActive(false);
+            return;
+        }
+
+        hpbar.gameObject.SetActive(true);
         Vector3 pos = this.transform.position;
         pos.y += 5;
         Vector3 viewPos = Camera.main.WorldToViewportPoint(pos);
@@ -44,7 +51,9 @@ public class ObjectUI : MonoBehaviour {
     public void DamageHp(int damage)
     {
         _hp -= damage;
-
-        _hpbarImg.fillAmount = Mathf.Clamp((float)_hp / _maxhp, 0.0f, 1.0f);
+        
+        float value = Mathf.Clamp((float)_hp / _maxhp, 0.0f, 1.0f);
+        _hpbarImg.fillAmount = value;
+        GameManager.GetInstance().playsceneUI.SetPlayerHpBar(value);
     }
 }

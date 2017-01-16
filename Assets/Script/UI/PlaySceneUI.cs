@@ -5,17 +5,24 @@ using UnityEngine.UI;
 
 public class PlaySceneUI : MonoBehaviour {
 
+
+    public GameObject titlePanal;
+    public GameObject playPanal;
+
     public Image HpImg;
     public Image ExpImg;
-    public GameObject Panal;
 
-    public GameObject title;
-    public GameObject startButton;
 
-    void start()
+    void Start()
     {
-     
+        if (false == GameManager.Initialized())
+            return;
+
+        titlePanal.gameObject.SetActive(true);
+        playPanal.gameObject.SetActive(false);
+        
     }
+
 
     public void SetPlayerHpBar(float value)
     {
@@ -29,8 +36,8 @@ public class PlaySceneUI : MonoBehaviour {
 
     public void OnClickStartButton()
     {
-        title.gameObject.SetActive(false);
-        startButton.gameObject.SetActive(false);
+        titlePanal.gameObject.SetActive(false);
+        playPanal.gameObject.SetActive(true);
         GameManager.GetInstance().SetState(GameManager.state.Play);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using ConstNameSpace;
 
 public class EnumyState : MonoBehaviour
 {
@@ -33,6 +34,9 @@ public class EnumyState : MonoBehaviour
     private const string strRun = "Run";
     private const string strAttack = "Attack";
 
+
+    public ObjectInfo Info;
+
     // Use this for initialization
     void Start()
     {
@@ -43,6 +47,8 @@ public class EnumyState : MonoBehaviour
         nav = this.gameObject.GetComponent<NavMeshAgent>();
         WayPointInit();
         Init();
+
+        Info = InfoManager.GetInstance().Enemy;
     }
 
     private void OnTriggerEnter(Collider coll)

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using ConstNameSpace;
 public enum PlayerState
 {
     IDEL,
@@ -38,6 +38,9 @@ public class Player : MonoBehaviour
     // 플레이어 체력
     private int hp = 100;
 
+    // 오브젝트 정보
+    public ObjectInfo Info { private set; get; }
+    
     private GameManager gameMgr;
 
     void Awake()
@@ -48,6 +51,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         gameMgr = GameManager.GetInstance();
+        Info = InfoManager.GetInstance().Player;
+
         PS = PlayerState.IDEL;
         StartCoroutine(this.CheckPlayerState());
     }
@@ -175,7 +180,7 @@ public class Player : MonoBehaviour
     {
         hp -= damage;
         _objectUI.DamageHp(damage);
-        Debug.Log(hp);
+        
 
         if(0 >= hp)
             PS = PlayerState.DIE;
