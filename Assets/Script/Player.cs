@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
     
     private GameManager gameMgr;
 
+    private bool _isMove = false;
+
     void Awake()
     {
         _instance = this;
@@ -55,6 +57,7 @@ public class Player : MonoBehaviour
 
         PS = PlayerState.IDEL;
         StartCoroutine(this.CheckPlayerState());
+        StartCoroutine("WalkEffect");
     }
 
     void Update()
@@ -149,18 +152,23 @@ public class Player : MonoBehaviour
         player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
          */
         //bool isEnd = gameMgr.GetJoystickVector
-        
 
-        if(!isEnd)
+
+        if (!isEnd)
         {
             PS = PlayerState.RUN;
             player.eulerAngles = new Vector3(player.eulerAngles.x,
                  Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
             player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            _isMove = true;
+
         }
         else
+        {
             PS = PlayerState.IDEL;
+            _isMove = false;
+        }
 
     }
 
@@ -191,5 +199,22 @@ public class Player : MonoBehaviour
     public void SetHpBar(ObjectUI objectUI)
     {
         _objectUI = objectUI;
+    }
+    
+    IEnumerator WalkEffect()
+    {
+        while (true)
+        {
+            if (_isMove == false)
+                yield return null;
+            else
+            {               
+                ResourceManager.GetInstance().MakeParticle(this.gameObject.transform.position, "Smoke/CFXM_SmokePuffs", 2.0f);
+                SoundManager.GetInstance().PlayOneshotClip("Footsteps/Footstep_Gravel_3");
+                yield return new WaitForSeconds(0.5f);
+            }
+            
+        }
+
     }
 }

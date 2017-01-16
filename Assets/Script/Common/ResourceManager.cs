@@ -29,7 +29,7 @@ public class ResourceManager : MonoBehaviour {
         _particleDic = new Dictionary<string, GameObject>();
     }
 
-    public void MakeParticle(Vector3 pos, string name,float lifeTime)
+    public ParticleSystem MakeParticle(Vector3 pos, string name,float lifeTime)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append("Prefabs/Effect/");
@@ -46,7 +46,7 @@ public class ResourceManager : MonoBehaviour {
             if (null == effectObj)
             {
                 Debug.LogError("Fail to Load Effect");
-                return;
+                return null;
             }
             else
                 _particleDic.Add(sb.ToString(), effectObj);
@@ -59,9 +59,14 @@ public class ResourceManager : MonoBehaviour {
         var particleObj = GameObject.Instantiate(effectObj) as GameObject;
 
         particleObj.transform.position = pos;          
-        var particleSystem = particleObj.GetComponent<ParticleSystem>();        
+        var particleSystem = particleObj.GetComponent<ParticleSystem>();
         if (null != particleSystem)
+        {
             StartCoroutine(CoParticleUpdate(particleSystem, lifeTime));
+            return particleSystem;
+        }
+        else
+            return null;
     }
     
 
@@ -74,8 +79,9 @@ public class ResourceManager : MonoBehaviour {
             time += Time.deltaTime;
             yield return null;
         }
-        
-        Destroy(particle.gameObject);
+
+        if(null != particle)
+            Destroy(particle.gameObject);
 
     }
 }
