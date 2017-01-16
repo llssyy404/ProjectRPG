@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     private CameraMgr _cameraMgr;
 
     public GameObject Player;
-    public GameObject Enemy;
+    public GameObject[] Enemy;
 
     private Player _player;
     public Player GetPlayer()
@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
     private void InitEnemy()
     {
         //enemy load
-        if (null != Enemy)
+        if (null != Enemy[0])
         {
             _enemyStateList = new List<EnumyState>();
             _wayPoint = new List<Vector3>();
@@ -124,7 +124,8 @@ public class GameManager : MonoBehaviour
 
             for (int i = 0; i < _wayPoint.Count; ++i)
             {
-                GameObject EnemyObject = GameObject.Instantiate(Enemy) as GameObject;
+                int EnemyTypeNum = Random.Range(0, Enemy.Length);
+                GameObject EnemyObject = Instantiate(Enemy[EnemyTypeNum]) as GameObject;
                 EnemyObject.transform.position = _wayPoint[i];
                 EnemyObject.gameObject.name = "Enemy_" + i;
                 ObjectUI objUI = EnemyObject.AddComponent<ObjectUI>();
