@@ -75,10 +75,16 @@ public class GameManager : MonoBehaviour
     {
         //map load
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
+     
+
+        //SceneManager.LoadScene("Map02", LoadSceneMode.Additive);
+        
     }
 
     private void InitUI()
     {
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Map02"));
+
         // UI load
         GameObject playSceneUIPrefab = Resources.Load("Prefabs/UI/PlaySceneUI") as GameObject;
         GameObject playScene = GameObject.Instantiate(playSceneUIPrefab) as GameObject;
