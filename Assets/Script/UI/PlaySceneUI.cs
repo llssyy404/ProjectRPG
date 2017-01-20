@@ -12,7 +12,7 @@ public class PlaySceneUI : MonoBehaviour {
     public Image HpImg;
     public Image ExpImg;
 
-
+    
     void Start()
     {
         if (false == GameManager.Initialized())
@@ -39,5 +39,15 @@ public class PlaySceneUI : MonoBehaviour {
         titlePanal.gameObject.SetActive(false);
         playPanal.gameObject.SetActive(true);
         GameManager.GetInstance().SetState(GameManager.state.Play);
+    }
+
+
+    public void OnClickAttackButton()
+    {
+        Debug.Log("Clicked Attack");
+    }
+    public void OnClickSkillButton(int index)
+    {
+        Debug.Log(string.Format("Clicked Skill {0}", index));
     }
 }

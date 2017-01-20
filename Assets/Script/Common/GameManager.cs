@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     // wayPoint값 받아와서 4개 위치 설정
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
+
     public enum state { Title, Play };
     public state GameState { get; private set; }
 

@@ -7,7 +7,7 @@ public class InfoManager : MonoBehaviour {
 
 
     public ObjectInfo Player {get; private set;}
-    public ObjectInfo Enemy;
+    public ObjectInfo Enemy {get; private set;}
 
     private static InfoManager _instance;
     public static InfoManager GetInstance()
