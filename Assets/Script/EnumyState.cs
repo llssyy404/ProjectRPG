@@ -4,9 +4,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using ConstNameSpace;
 
+public enum EnemyBehavState
+{
+    IDLE = 0,
+    CHASE,
+    PATROL,
+    ATTACK,
+    DEMAGED,
+    DIE,
+    MAX_ENEMY_BEHAV_STATE
+};
+
 public class EnumyState : MonoBehaviour
 {
-    enum EnemyBehavState { IDLE = 0, CHASE, PATROL, ATTACK, DEMAGED, DIE };
     EnemyBehavState eEnemyState = EnemyBehavState.IDLE;
     Vector3[] wayPoint;
     int curWayPoint = 0;
