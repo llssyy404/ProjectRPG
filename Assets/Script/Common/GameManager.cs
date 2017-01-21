@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
         return _player;
     }
 
+    private EnemyStateManager _enemyStateManager;
+    public EnemyStateManager enemyStateManager
+    {
+        get { return _enemyStateManager; }
+    }
+
     private List<EnumyState> _enemyStateList;
 
     private static GameManager _instance;
@@ -114,6 +120,8 @@ public class GameManager : MonoBehaviour
 
     private void InitEnemy()
     {
+        _enemyStateManager = new EnemyStateManager();
+
         //enemy load
         if (null != Enemy[0])
         {
