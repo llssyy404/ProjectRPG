@@ -238,31 +238,34 @@ public class Player : MonoBehaviour
     }
     public void OnAttackSkill()
     {
-
         isOnSkill = true;
         PS = PlayerState.ATTACK1;
-        
     }
     public void OnSkill(int index)
     {
-
         isOnSkill = true;
         
-            switch(index)
-            {
-                case 0:
-                    PS = PlayerState.ATTACK2;
-                    break;
-                case 1:
-                    PS = PlayerState.ATTACK3;
-                    break;
-                case 2:
-                    PS = PlayerState.ATTACK4;
-                    break;
-            }
-    
-        
+        switch(index)
+        {
+            case 0:
+               PS = PlayerState.ATTACK2;
+               break;
+            case 1:
+               PS = PlayerState.ATTACK3;
+               break;
+            case 2:
+               PS = PlayerState.ATTACK4;
+               break;
+        }
     }
+
+
+    //쿨타임 스킬 코루틴
+    IEnumerator Skill1CoolTime()
+    {
+        yield break;
+    }
+
 
 
 }
