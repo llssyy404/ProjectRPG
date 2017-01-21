@@ -4,28 +4,16 @@ using UnityEngine;
 using UnityEngine.AI;
 using ConstNameSpace;
 
-public enum EnemyBehavState
-{
-    IDLE = 0,
-    CHASE,
-    PATROL,
-    ATTACK,
-    DEMAGED,
-    DIE,
-    MAX_ENEMY_BEHAV_STATE
-};
-
 public class EnumyState : MonoBehaviour
 {
-    EnemyBehavState eEnemyState = EnemyBehavState.IDLE;
-    Vector3[] wayPoint;
-    int curWayPoint = 0;
-    bool isDestination = true;
-    int wayPointCount = 4;
+    private Vector3[] _wayPoint;
+    private int _curWayPoint = 0;
+    private bool _isDestination = true;
+    private int _wayPointCount = 4;
     private Transform playerTrans;
     private NavMeshAgent nav;
-
     private Animator anim;
+    private StateMachine<EnumyState> _stateMachine;
 
     private int _hp = 100;
     private int _demage = 10;
@@ -51,12 +39,13 @@ public class EnumyState : MonoBehaviour
     void Start()
     {
         playerTrans = GameManager.GetInstance().GetPlayer().transform;
-        wayPoint = new Vector3[wayPointCount];
-        eEnemyState = EnemyBehavState.PATROL;
+        _wayPoint = new Vector3[_wayPointCount];
         anim = GetComponent<Animator>();
         nav = this.gameObject.GetComponent<NavMeshAgent>();
-        WayPointInit();
         Init();
+        WayPointInit();
+        _stateMachine = new StateMachine<EnumyState>();
+        _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_PATROL));
 
         Info = InfoManager.GetInstance().Enemy;
     }
@@ -66,7 +55,7 @@ public class EnumyState : MonoBehaviour
         if (coll.gameObject.tag == "Player")
         {
             SphereCollider scoll = GetComponent<SphereCollider>();
-            ResourceManager.GetInstance().MakeParticle(scoll.transform.position, "Effect_02", 2.0f);
+            ResourceManager.GetInstance().MakeParticle(coll.transform.position, "Hits/CFXM_GroundHit+Text", 2.0f);
             SoundManager.GetInstance().PlayOneshotClip("sword");
             Player player = GameManager.GetInstance().GetPlayer();
             player.DamageHp(_demage);
@@ -78,62 +67,48 @@ public class EnumyState : MonoBehaviour
     void Update()
     {
         SetEnemyStateByPlayerPos();         // 적 state 설정
-        SetDestinationByEnemyState();       // state에 따른 목표위치 설정
+        _stateMachine.ProcessState(this);
     }
 
     //
     void SetEnemyStateByPlayerPos()
     {
-        if (eEnemyState == EnemyBehavState.DIE)
+        if (_stateMachine.GetCurStateType() == STATE_TYPE.STATE_DIE)
             return;
 
         float distance = GetDistanceByTargetPosition(playerTrans.position);
         if (distance > chaseDistance)
         {
-            StateTransition(EnemyBehavState.PATROL, patrolSpeed, false, false, strWalk);
+            _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_PATROL));
         }
         else if (distance < attackDistance)
         {
-            StateTransition(EnemyBehavState.ATTACK, 0.0f, false, true, strAttack);
+            _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_ATTACK));
         }
         else
         {
-            StateTransition(EnemyBehavState.CHASE, chaseSpeed, true, false, strRun);
-        }
-    }
-
-    void SetDestinationByEnemyState()
-    {
-        if (eEnemyState == EnemyBehavState.DIE)
-            return;
-
-        switch (eEnemyState)
-        {
-            case EnemyBehavState.CHASE: nav.SetDestination(playerTrans.position); break;
-            case EnemyBehavState.PATROL: Patroll(); break;
-            default: break;
+            _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_CHASE));
         }
     }
 
     //
     void Init()
     {
-        isDestination = true;
-        eEnemyState = EnemyBehavState.PATROL;
+        _isDestination = true;
         nav.speed = patrolSpeed;
         _hp = maxHP;
-        curWayPoint = 0;
+        _curWayPoint = 0;
     }
 
     void WayPointInit()
     {
-        wayPoint[0] = transform.position;
-        wayPoint[1] = new Vector3(transform.position.x, transform.position.y, transform.position.z + wayPointHeight);
-        wayPoint[2] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z + wayPointHeight);
-        wayPoint[3] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z);
+        _wayPoint[0] = transform.position;
+        _wayPoint[1] = new Vector3(transform.position.x, transform.position.y, transform.position.z + wayPointHeight);
+        _wayPoint[2] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z + wayPointHeight);
+        _wayPoint[3] = new Vector3(transform.position.x + wayPointWidth, transform.position.y, transform.position.z);
     }
 
-    float GetDistanceByTargetPosition(Vector3 TargetPosition)
+    public float GetDistanceByTargetPosition(Vector3 TargetPosition)
     {
         return Vector3.Distance(transform.position, TargetPosition);
     }
@@ -145,31 +120,29 @@ public class EnumyState : MonoBehaviour
         anim.Play(strPlayAnim);
     }
 
-    void StateTransition(EnemyBehavState enemyState, float speed, bool isChase, bool isAttack, string strPlayAnim)
+    public void StateTransition(STATE_TYPE enemyState, float speed, bool isChase, bool isAttack, string strPlayAnim)
     {
-        if (eEnemyState == enemyState)
+        if (_stateMachine.GetCurStateType() == enemyState)
             return;
 
         nav.speed = speed;
         SetAnimation(isChase, isAttack, strPlayAnim);
-        eEnemyState = enemyState;
-
     }
 
-    void Patroll()
+    public void Patroll()
     {
-        nav.SetDestination(wayPoint[curWayPoint]);
-        if (GetDistanceByTargetPosition(wayPoint[curWayPoint]) < destDistance && isDestination == false)
-            isDestination = true;
+        nav.SetDestination(_wayPoint[_curWayPoint]);
+        if (GetDistanceByTargetPosition(_wayPoint[_curWayPoint]) < destDistance && _isDestination == false)
+            _isDestination = true;
 
-        if (isDestination == false)
+        if (_isDestination == false)
             return;
 
-        ++curWayPoint;
-        if (curWayPoint == wayPointCount)
-            curWayPoint = 0;
+        ++_curWayPoint;
+        if (_curWayPoint == _wayPointCount)
+            _curWayPoint = 0;
 
-        isDestination = false;
+        _isDestination = false;
     }
 
     void Damaged(int damage)
@@ -180,11 +153,9 @@ public class EnumyState : MonoBehaviour
 
         _objectUI.DamageHp(damage);
 
-        if (_hp <= 0 && eEnemyState != EnemyBehavState.DIE)
+        if (_hp <= 0 )
         {
-            SetAnimation(false, false, strDie);
-            nav.Stop();
-            eEnemyState = EnemyBehavState.DIE;
+            _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_DIE));
         }
     }
 
@@ -194,10 +165,38 @@ public class EnumyState : MonoBehaviour
         get { return _hp; }
     }
 
+    public StateMachine<EnumyState> stateMachine
+    {
+        get { return _stateMachine; }
+    }
+
     private ObjectUI _objectUI;
     public void SetHpBar(ObjectUI objectUI)
     {
         _objectUI = objectUI;
         _objectUI.Init(_hp);
     }
+
+    //public Vector3 GetWayPoint(int wayPointCount)
+    //{
+    //    return _wayPoint[wayPointCount];
+    //}
+
+    //public int curWayPoint
+    //{
+    //    get { return _curWayPoint; }
+    //    set { _curWayPoint = curWayPoint; }
+    //}
+
+    //public bool isDestination
+    //{
+    //    get { return _isDestination; }
+    //    set { _isDestination = isDestination; }
+    //}
+
+    //public int wayPointCount
+    //{
+    //    get { return _wayPointCount; }
+    //}
+
 }

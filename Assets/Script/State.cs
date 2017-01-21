@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum STATE_TYPE
 {
-    //STATE_IDLE = 0,
-    STATE_PATROL = 0,
+    STATE_IDLE = 0,
+    STATE_PATROL,
     STATE_CHASE,
     STATE_ATTACK,
-    //STATE_DEMAGED,
+    STATE_DEMAGED,
     STATE_DIE,
     MAX_STATE_TYPE
 }
@@ -20,6 +21,30 @@ public abstract class State<TEntity> {
     public virtual bool StartState(TEntity entity) { return false; }
     public virtual bool ProcessState(TEntity entity) { return false; }
     public virtual bool FinishState(TEntity entity) { return false; }
+    //public virtual bool CheckState(TEntity entity) { return false; }
+}
+
+public class EnemyIdleState : State<EnumyState>
+{
+    public EnemyIdleState()
+    {
+        _stateType = STATE_TYPE.STATE_IDLE;
+    }
+
+    public override bool StartState(EnumyState entity)
+    {
+        return true;
+    }
+
+    public override bool ProcessState(EnumyState entity)
+    {
+        return true;
+    }
+
+    public override bool FinishState(EnumyState entity)
+    {
+        return true;
+    }
 }
 
 public class EnemyPatrolState : State<EnumyState>
@@ -31,17 +56,21 @@ public class EnemyPatrolState : State<EnumyState>
 
     public override bool StartState(EnumyState entity)
     {
-        return false;
+        entity.StateTransition(STATE_TYPE.STATE_PATROL, 5.0f, false, false, "Walk");
+
+        return true;
     }
 
     public override bool ProcessState(EnumyState entity)
     {
-        return false;
+        entity.Patroll();
+
+        return true;
     }
 
     public override bool FinishState(EnumyState entity)
     {
-        return false;
+        return true;
     }
 }
 
@@ -54,17 +83,23 @@ public class EnemyChaseState : State<EnumyState>
 
     public override bool StartState(EnumyState entity)
     {
-        return false;
+        entity.StateTransition(STATE_TYPE.STATE_CHASE, 7.0f, true, false, "Run");
+
+        return true;
     }
 
     public override bool ProcessState(EnumyState entity)
     {
-        return false;
+        Transform playerTrans = GameManager.GetInstance().GetPlayer().transform;
+        NavMeshAgent nav = entity.gameObject.GetComponent<NavMeshAgent>();
+        nav.SetDestination(playerTrans.position);
+
+        return true;
     }
 
     public override bool FinishState(EnumyState entity)
     {
-        return false;
+        return true;
     }
 }
 
@@ -77,100 +112,69 @@ public class EnemyAttackState : State<EnumyState>
 
     public override bool StartState(EnumyState entity)
     {
-        return false;
+        entity.StateTransition(STATE_TYPE.STATE_ATTACK, 0.0f, false, true, "Attack");
+
+        return true;
     }
 
     public override bool ProcessState(EnumyState entity)
     {
-        return false;
+        return true;
     }
 
     public override bool FinishState(EnumyState entity)
     {
-        return false;
-    }
-}
-
-public class EnemyStateManager
-{
-    State<EnumyState>[] _arrEnemyState;
-
-    public EnemyStateManager()
-    {
-        _arrEnemyState = new State<EnumyState>[(int)STATE_TYPE.MAX_STATE_TYPE];
-        _arrEnemyState[(int)STATE_TYPE.STATE_PATROL] = new EnemyPatrolState();
-        _arrEnemyState[(int)STATE_TYPE.STATE_CHASE] = new EnemyChaseState();
-        _arrEnemyState[(int)STATE_TYPE.STATE_ATTACK] = new EnemyAttackState();
-    }
-
-    public State<EnumyState> GetEnemyState( STATE_TYPE stateType) { return _arrEnemyState[(int)stateType]; }
-}
-
-public class EnemyStateCheckFunc
-{
-    static bool CheckPatrol(EnumyState enemyState, STATE_TYPE stateType)
-    {
-        if (stateType != STATE_TYPE.STATE_DIE)
-            return false;
-
         return true;
     }
 }
 
-public class StateMachine<TEntity>
+public class EnemyDemagedState : State<EnumyState>
 {
-    private State<TEntity> curState;
-    private State<TEntity> prevState;
-    private State<TEntity> morePrevState;
-
-    // get
-    public STATE_TYPE CurStateType
+    public EnemyDemagedState()
     {
-        get { return curState.stateType; }
+        _stateType = STATE_TYPE.STATE_DEMAGED;
     }
 
-    public STATE_TYPE PrevStateType
+    public override bool StartState(EnumyState entity)
     {
-        get { return prevState.stateType; }
+        return true;
     }
 
-    //
-    public bool ChangeState(TEntity tEntity, State<TEntity> changeState)
+    public override bool ProcessState(EnumyState entity)
     {
-        if (changeState == null)
-            return false;
-
-        return Change(tEntity, changeState);
+        return true;
     }
 
-    public bool Change(TEntity tEntity, State<TEntity> changeState)
+    public override bool FinishState(EnumyState entity)
     {
-        if (changeState == null)
-            return false;
+        return true;
+    }
+}
 
-        if (curState != null)
-            curState.FinishState(tEntity);
+public class EnemyDieState : State<EnumyState>
+{
+    public EnemyDieState()
+    {
+        _stateType = STATE_TYPE.STATE_DIE;
+    }
 
-        if(!changeState.StartState(tEntity))
-        {
-            if (curState != null)
-                curState.StartState(tEntity);
+    public override bool StartState(EnumyState entity)
+    {
+        entity.StateTransition(STATE_TYPE.STATE_DIE, 0.0f, false, false, "Die");
 
-            return true;
-        }
-
-        morePrevState = prevState;
-        prevState = curState;
-        curState = changeState;
+        NavMeshAgent nav = entity.gameObject.GetComponent<NavMeshAgent>();
+        nav.Stop();
 
         return true;
     }
 
-    public void ProcessState(TEntity tEntity)
+    public override bool ProcessState(EnumyState entity)
     {
-        if (curState == null)
-            return;
+        return true;
+    }
 
-        curState.ProcessState(tEntity);
+    public override bool FinishState(EnumyState entity)
+    {
+        return true;
     }
 }
