@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CarState : MonoBehaviour {
 
-	const int MAX = 1;
+	const int MAX = 8;
 
 	enum CarBehavState { IDLE = 0,  PATROL };
 	CarBehavState eCarState = CarBehavState.IDLE;
@@ -28,6 +28,9 @@ public class CarState : MonoBehaviour {
 	// Use this for initialization
 	void Start()
 	{
+//		if (false == GameManager.Initialized())
+//			return;
+		
 		f_time = 0;
 
 		//차와 인간의 거리를 구합시다...
@@ -43,20 +46,23 @@ public class CarState : MonoBehaviour {
 
 		//등록
 		Cars[0] = (GameObject)Resources.Load("Prefabs/Car_3 (4)");
-//		Cars[1] = (GameObject)Resources.Load("Prefabs/Car_3 (6)");
-//		Cars[2] = (GameObject)Resources.Load("Prefabs/Car_3 (7)");
-//		Cars[3] = (GameObject)Resources.Load("Prefabs/Car_3 (8)");
+		Cars[1] = (GameObject)Resources.Load("Prefabs/Car_3 (6)");
+		Cars[2] = (GameObject)Resources.Load("Prefabs/Car_3 (7)");
+		Cars[3] = (GameObject)Resources.Load("Prefabs/Car_3 (8)");
+		Cars[4] = (GameObject)Resources.Load("Prefabs/Car_3 (4)");
+		Cars[5] = (GameObject)Resources.Load("Prefabs/Car_3 (6)");
+		Cars[6] = (GameObject)Resources.Load("Prefabs/Car_3 (7)");
+		Cars[7] = (GameObject)Resources.Load("Prefabs/Car_3 (8)");
 
-
-//		// 등록후 생성
-//		Cars[0] = 	GameObject.Instantiate(Cars[0],CarPos[0]);
-//		CarPos [0] = Cars [0].transform;
-//		CarPos [0].transform.Rotate (0, 90,0); 
-//		CarPos [0].transform.position = new Vector3 (0, 5, 0);
 		for (int i = 0; i < MAX; ++i) {
 			Cars [i] = GameObject.Instantiate (Cars [i], CarPos [i]);
+			Cars [i].GetComponent<CarCollision> ().SetDirection (i %2 ==0 ? 1:-1);
 			CarPos [i] = Cars [i].transform;
-			CarPos [i].transform.Rotate (0, -90, 0); 
+			if(i %2 ==0)
+				CarPos [i].transform.Rotate (0, 90*i  , 0); 
+			else
+				CarPos [i].transform.Rotate (0, -90*i , 0); 
+
 			CarPos [i].transform.position = m_wayPoint [i].transform.position;
 			Debug.Log(m_wayPoint [i].transform.position);
 		}
@@ -76,10 +82,18 @@ public class CarState : MonoBehaviour {
 
 	void WayPointInit()
 	{
-		m_wayPoint[0] = GameObject.Find( "Way1"); 
-//		m_wayPoint[1] = GameObject.Find( "Way2"); 
-//		m_wayPoint[2] = GameObject.Find( "Way3"); 
-//		m_wayPoint[3] = GameObject.Find( "Way4"); 
+		m_wayPoint[0] = GameObject.Find( "CarWayPointPos/Way1"); 
+		m_wayPoint[1] = GameObject.Find( "CarWayPointPos/Way1 (1)"); 
+
+		m_wayPoint[2] = GameObject.Find( "CarWayPointPos/Way4"); 
+		m_wayPoint[3] = GameObject.Find( "CarWayPointPos/Way4 (1)"); 
+
+		m_wayPoint[4] = GameObject.Find( "CarWayPointPos2/Way1"); 
+		m_wayPoint[5] = GameObject.Find( "CarWayPointPos2/Way1 (1)"); 
+
+		m_wayPoint[6] = GameObject.Find( "CarWayPointPos2/Way4"); 
+		m_wayPoint[7] = GameObject.Find( "CarWayPointPos2/Way4 (1)"); 
+
 	}
 
 	float GetDistanceByTargetPosition(Vector3 TargetPosition)
@@ -98,20 +112,9 @@ public class CarState : MonoBehaviour {
 	{
 		// 직선으로 일단 움직임.. 0번에 right를 쓴 이유는 프리팹이 90도 돌아가있어서...
 		for (int i = 0; i < MAX; ++i) {
-			CarPos[i].transform.Translate(Vector3.left * PatrolSpeed * Time.deltaTime );
+			CarPos[i].transform.Translate(Vector3.left * PatrolSpeed *  Time.deltaTime );
+			Debug.Log ("asd :  "+Cars [i].GetComponent<CarCollision> ().f_dir);
 		}
-
-		// 웨이포인트에 가면 IDLE로 바뀜
-//		if(CarPos[0].transform.position == new Vector3(18.1f ,5.0f, -164.0f)){
-//			//m_wayPoint[1].transform.position;
-//			Debug.Log ("요시1" );
-//		}
-//		if (f_time >= 3 && eCarState == CarBehavState.PATROL) {
-//			//Debug.Log ("요시1" );
-//			eCarState = CarBehavState.IDLE;
-//			f_time = 0;
-//
-//		}
 
 	}
 
