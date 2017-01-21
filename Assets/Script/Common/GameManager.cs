@@ -166,6 +166,14 @@ public class GameManager : MonoBehaviour
     {
         _joystickInfo._playerJoystickIsEnd = isEnd;
         _joystickInfo._joystickVector = pos;
+        if (!isEnd)
+        {
+            _player.OnRun();
+        }
+        else
+        {
+            _player.OnIdel();
+        }
     }
     
     public void SetState(state state)

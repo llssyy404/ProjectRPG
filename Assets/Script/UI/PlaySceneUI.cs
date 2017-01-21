@@ -46,11 +46,11 @@ public class PlaySceneUI : MonoBehaviour {
     public void OnClickAttackButton()
     {
         _player.OnAttackSkill();
-        Debug.Log("Clicked Attack");
+       // Debug.Log("Clicked Attack");
     }
     public void OnClickSkillButton(int index)
     {
         _player.OnSkill(index);
-        Debug.Log(string.Format("Clicked Skill {0}", index));
+        //Debug.Log(string.Format("Clicked Skill {0}", index));
     }
 }
