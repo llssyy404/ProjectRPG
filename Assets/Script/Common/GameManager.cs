@@ -68,8 +68,8 @@ public class GameManager : MonoBehaviour
         InitCamera();
 
         SoundManager.GetInstance().PlayLoopBgm("Bgm");
-        SoundManager.GetInstance().PlayOneshotClip("sword");
-        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
+        //SoundManager.GetInstance().PlayOneshotClip("sword");
+        //ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
     
     private void LoadMap()
