@@ -64,7 +64,7 @@ public class CarState : MonoBehaviour {
 				CarPos [i].transform.Rotate (0, -90*i , 0); 
 
 			CarPos [i].transform.position = m_wayPoint [i].transform.position;
-			Debug.Log(m_wayPoint [i].transform.position);
+			//Debug.Log(m_wayPoint [i].transform.position);
 		}
 		//웨이포인트 위치를 세팅합니다.
 //		m_wayPoint = new Vector3[??];
@@ -113,7 +113,7 @@ public class CarState : MonoBehaviour {
 		// 직선으로 일단 움직임.. 0번에 right를 쓴 이유는 프리팹이 90도 돌아가있어서...
 		for (int i = 0; i < MAX; ++i) {
 			CarPos[i].transform.Translate(Vector3.left * PatrolSpeed *  Time.deltaTime );
-			Debug.Log ("asd :  "+Cars [i].GetComponent<CarCollision> ().f_dir);
+			//Debug.Log ("asd :  "+Cars [i].GetComponent<CarCollision> ().f_dir);
 		}
 
 	}

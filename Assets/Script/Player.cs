@@ -45,12 +45,17 @@ public class Player : MonoBehaviour
 
     private bool _isMove = false;
 
-    float coolTime = 3f; 
+    float coolTime = 5f; 
     float addSkillTime = 0f;
   
     bool isOnSkill = false;
 
-    
+    //
+    bool isSkill1 = true;
+    bool isSkill2 = true;
+    bool isSkill3 = true;
+    bool iSAttak = true;
+
     void Awake()
     {
         _instance = this;
@@ -64,6 +69,10 @@ public class Player : MonoBehaviour
         PS = PlayerState.IDEL;
         StartCoroutine(this.CheckPlayerState());
         StartCoroutine("WalkEffect");
+        StartCoroutine(this.Skill1CoolTime());
+        StartCoroutine(this.Skill2CoolTime());
+        StartCoroutine(this.Skill3CoolTime());
+
     }
 
     void Update()
@@ -82,6 +91,7 @@ public class Player : MonoBehaviour
             }
         }
 
+      
     }
 
     IEnumerator CheckPlayerState()
@@ -244,28 +254,85 @@ public class Player : MonoBehaviour
     public void OnSkill(int index)
     {
         isOnSkill = true;
+    
+            switch (index)
+            {
+                case 0:
+                    if(isSkill1)
+                    {
+                        isSkill1 = false;
+                        PS = PlayerState.ATTACK2;
+                       
+                    }
+                        break;
+                case 1:
+                    if (isSkill2)
+                    {
+                        isSkill2 = false;
+                        PS = PlayerState.ATTACK3;
+                      
+                    }
+                    break;
+                case 2:
+                    if (isSkill3)
+                    {
+                        isSkill3 = false;
+                        PS = PlayerState.ATTACK4;
+                        
+                    }
+                        break;
+                default:
+
+                        break;
+            }
         
-        switch(index)
-        {
-            case 0:
-               PS = PlayerState.ATTACK2;
-               break;
-            case 1:
-               PS = PlayerState.ATTACK3;
-               break;
-            case 2:
-               PS = PlayerState.ATTACK4;
-               break;
-        }
     }
 
 
     //쿨타임 스킬 코루틴
     IEnumerator Skill1CoolTime()
     {
-        yield break;
+        while (true)
+        {
+            yield return new WaitForSeconds(coolTime);
+            
+            if (isSkill1 == true)
+                yield return null;
+            else
+                isSkill1 = true;
+      
+        }
     }
 
+    //2
+    IEnumerator Skill2CoolTime()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(coolTime);
+
+            if (isSkill2 == true)
+                yield return null;
+            else
+                isSkill2 = true;
+            
+        }
+    }
+
+    //3
+    IEnumerator Skill3CoolTime()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(coolTime);
+
+            if (isSkill3 == true)
+                yield return null;
+            else
+                isSkill3 = true;
+            
+        }
+    }
 
 
 }
