@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CarCollision : MonoBehaviour {
 
-	public float PatrolSpeed = 10.0f;
+	public float PatrolSpeed = 20.0f;
 
 	//타이머
 	public float f_time;
@@ -21,44 +21,53 @@ public class CarCollision : MonoBehaviour {
 	void Update () {
 		f_time += Time.deltaTime;
 	}
-//	void OnTriggerExit(Collider col){
-//		if (col.tag == "Car") {
-//			Debug.Log ("asd");
-//
-//			//랜덤돌려서 방향을 정함.
-//			//방향 전환하고 나서 상태를 패트롤로 돌려줌
-//			PatrolSpeed = Random.Range (10, 30);
-//			gameObject.transform.Rotate (0, 180, 0);
-//		}
-//	}
 	void OnTriggerEnter(Collider col){
 		//일단 야매코드;;
 		if (f_time >= 3) {
-			//정석
 			if (col.tag == "Car") {
-				Debug.Log ("asd");
-
-                //랜덤돌려서 방향을 정함.
-                //방향 전환하고 나서 상태를 패트롤로 돌려줌
-                //PatrolSpeed = Random.Range (10, 30);
-                //gameObject.transform.Rotate (0, 180, 0);
                 StartCoroutine(RotationCar());
+			} 
+		}
+	}
+	void OnTriggerExit(Collider col){
+		//일단 야매코드;;
+		if (f_time >= 3) {
+			if (col.tag == "Car") {
+				CorrectlyCarPos ();
 			}
 		}
+	}
+	void CorrectlyCarPos(){
+		//transform.eulerAngles.y
+		if ((transform.eulerAngles.y <= 30.0f) && (transform.eulerAngles.y >= -30.0f)) {
+			Debug.Log ("1");
+			//transform.rotation = new Quaternion(0,0,0,0);
+		} else if ((transform.eulerAngles.y <= 30.0f + 90.0f) && (transform.eulerAngles.y >= -30.0f + 90.0f)) {
+			Debug.Log ("2");
+			//transform.rotation = new Quaternion(0,0+90.0f,0,0);
+		} else if ((transform.eulerAngles.y <= 30.0f + 180.0f) && (transform.eulerAngles.y >= -30.0f + 180.0f)) {
+			Debug.Log ("3");
+			//transform.rotation = new Quaternion(0,0+180.0f,0,0);
+		} else if ((transform.eulerAngles.y <= 30.0f + 270.0f) && (transform.eulerAngles.y >= -30.0f + 270.0f)) {
+			Debug.Log ("4");
+			//transform.rotation = new Quaternion(0,0+270.0f,0,0);
+		} else {
+			Debug.Log ("Break");
+
+		}
+	
 
 	}
-
     IEnumerator RotationCar()
     {
         float time = 0;
-
-        while(time < 1)
+		while(time <= 1)
         {
             time += Time.deltaTime;            
             gameObject.transform.Rotate(0, 90 * Time.deltaTime, 0);
             yield return null;
         }
-        
+
        Debug.Log("CompleteRotate");
 
     }
