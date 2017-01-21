@@ -11,7 +11,8 @@ public class PlaySceneUI : MonoBehaviour {
 
     public Image HpImg;
     public Image ExpImg;
-
+    
+    private Player _player;
     
     void Start()
     {
@@ -20,7 +21,7 @@ public class PlaySceneUI : MonoBehaviour {
 
         titlePanal.gameObject.SetActive(true);
         playPanal.gameObject.SetActive(false);
-        
+        _player = Player.GetInstance();        
     }
 
 
@@ -44,10 +45,12 @@ public class PlaySceneUI : MonoBehaviour {
 
     public void OnClickAttackButton()
     {
+        _player.OnAttackSkill();
         Debug.Log("Clicked Attack");
     }
     public void OnClickSkillButton(int index)
     {
+        _player.OnSkill(index);
         Debug.Log(string.Format("Clicked Skill {0}", index));
     }
 }

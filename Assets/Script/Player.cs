@@ -63,9 +63,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayMove();
+
+        /*
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            PS = PlayerState.ATTACK1;
+            //PS = PlayerState.ATTACK1;
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -83,7 +85,7 @@ public class Player : MonoBehaviour
         {
             PS = PlayerState.DIE;
         }
-
+        */
     }
 
     IEnumerator CheckPlayerState()
@@ -108,6 +110,7 @@ public class Player : MonoBehaviour
                       
                     break;
                 case PlayerState.ATTACK1:
+                    Debug.Log("들오");
                     playerAnim.SetBool("IsAttack", true);
                     playerAnim.SetBool("IsAttack2", false);
                     playerAnim.SetBool("IsAttack3", false);
@@ -217,4 +220,29 @@ public class Player : MonoBehaviour
         }
 
     }
+    
+
+    public void OnAttackSkill()
+    {
+        
+        PS = PlayerState.ATTACK1;
+        Debug.Log(PS);
+    }
+
+    public void OnSkill(int index)
+    {
+        switch(index)
+        {
+            case 1:
+                PS = PlayerState.ATTACK2;
+                break;
+            case 2:
+                PS = PlayerState.ATTACK3;
+                break;
+            case 3:
+                PS = PlayerState.ATTACK4;
+                break;
+        }
+    }
+
 }
