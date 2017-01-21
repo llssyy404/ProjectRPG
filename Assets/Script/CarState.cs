@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class CarState : MonoBehaviour {
 
+	const int MAX = 1;
+
 	enum CarBehavState { IDLE = 0,  PATROL };
 	CarBehavState eCarState = CarBehavState.IDLE;
-	public float PatrolSpeed = 10.0f;
+	public float PatrolSpeed = 5.0f;
 
 	// 웨이포인트 상태를 받아오던지 만들던지
 	GameObject[] m_wayPoint;
@@ -32,18 +34,18 @@ public class CarState : MonoBehaviour {
 		//프레이아 위치
 		//PlayerTrans = GameManager.GetInstance().GetPlayer().transform;
 		//카 위치
-		m_wayPoint = new GameObject[4];
+		m_wayPoint = new GameObject[MAX];
 		WayPointInit ();
 
 		// Car_1a 프리팹 등록; 갯수는 나중에 수정염...
-		Cars = new GameObject[4];
-		CarPos = new Transform[4];
+		Cars = new GameObject[MAX];
+		CarPos = new Transform[MAX];
 
 		//등록
 		Cars[0] = (GameObject)Resources.Load("Prefabs/Car_3 (4)");
-		Cars[1] = (GameObject)Resources.Load("Prefabs/Car_3 (6)");
-		Cars[2] = (GameObject)Resources.Load("Prefabs/Car_3 (7)");
-		Cars[3] = (GameObject)Resources.Load("Prefabs/Car_3 (8)");
+//		Cars[1] = (GameObject)Resources.Load("Prefabs/Car_3 (6)");
+//		Cars[2] = (GameObject)Resources.Load("Prefabs/Car_3 (7)");
+//		Cars[3] = (GameObject)Resources.Load("Prefabs/Car_3 (8)");
 
 
 //		// 등록후 생성
@@ -51,7 +53,7 @@ public class CarState : MonoBehaviour {
 //		CarPos [0] = Cars [0].transform;
 //		CarPos [0].transform.Rotate (0, 90,0); 
 //		CarPos [0].transform.position = new Vector3 (0, 5, 0);
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < MAX; ++i) {
 			Cars [i] = GameObject.Instantiate (Cars [i], CarPos [i]);
 			CarPos [i] = Cars [i].transform;
 			CarPos [i].transform.Rotate (0, -90, 0); 
@@ -75,9 +77,9 @@ public class CarState : MonoBehaviour {
 	void WayPointInit()
 	{
 		m_wayPoint[0] = GameObject.Find( "Way1"); 
-		m_wayPoint[1] = GameObject.Find( "Way2"); 
-		m_wayPoint[2] = GameObject.Find( "Way3"); 
-		m_wayPoint[3] = GameObject.Find( "Way4"); 
+//		m_wayPoint[1] = GameObject.Find( "Way2"); 
+//		m_wayPoint[2] = GameObject.Find( "Way3"); 
+//		m_wayPoint[3] = GameObject.Find( "Way4"); 
 	}
 
 	float GetDistanceByTargetPosition(Vector3 TargetPosition)
@@ -95,15 +97,15 @@ public class CarState : MonoBehaviour {
 	void Patroll()
 	{
 		// 직선으로 일단 움직임.. 0번에 right를 쓴 이유는 프리팹이 90도 돌아가있어서...
-		for (int i = 0; i < 4; ++i) {
-			CarPos[0].transform.Translate(Vector3.left * 5 * Time.deltaTime );
+		for (int i = 0; i < MAX; ++i) {
+			CarPos[i].transform.Translate(Vector3.left * PatrolSpeed * Time.deltaTime );
 		}
 
 		// 웨이포인트에 가면 IDLE로 바뀜
-		if(CarPos[0].transform.position == new Vector3(18.1f ,5.0f, -164.0f)){
-			//m_wayPoint[1].transform.position;
-			Debug.Log ("요시1" );
-		}
+//		if(CarPos[0].transform.position == new Vector3(18.1f ,5.0f, -164.0f)){
+//			//m_wayPoint[1].transform.position;
+//			Debug.Log ("요시1" );
+//		}
 //		if (f_time >= 3 && eCarState == CarBehavState.PATROL) {
 //			//Debug.Log ("요시1" );
 //			eCarState = CarBehavState.IDLE;
@@ -117,7 +119,7 @@ public class CarState : MonoBehaviour {
 	void Idle(){
 //		f_time += Time.deltaTime;
 //		//랜덤돌려서 방향을 정함.
-//
+// 
 //		//방향 전환하고 나서 상태를 패트롤로 돌려줌
 //		if (f_time >= 1  && eCarState == CarBehavState.IDLE) {
 //			Debug.Log ("요시2" );
