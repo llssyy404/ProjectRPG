@@ -74,8 +74,8 @@ public class GameManager : MonoBehaviour
         InitCamera();
 
         SoundManager.GetInstance().PlayLoopBgm("Bgm");
-        SoundManager.GetInstance().PlayOneshotClip("sword");
-        ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
+        //SoundManager.GetInstance().PlayOneshotClip("sword");
+        //ResourceManager.GetInstance().MakeParticle(new Vector3(0, 0, 0), "Effect_02", 2.0f);
 	}
     
     private void LoadMap()
@@ -174,6 +174,14 @@ public class GameManager : MonoBehaviour
     {
         _joystickInfo._playerJoystickIsEnd = isEnd;
         _joystickInfo._joystickVector = pos;
+        if (!isEnd)
+        {
+            _player.OnRun();
+        }
+        else
+        {
+            _player.OnIdel();
+        }
     }
     
     public void SetState(state state)
