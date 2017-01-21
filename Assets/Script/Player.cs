@@ -45,6 +45,12 @@ public class Player : MonoBehaviour
 
     private bool _isMove = false;
 
+    float coolTime = 3f; 
+    float addSkillTime = 0f;
+  
+    bool isOnSkill = false;
+
+    
     void Awake()
     {
         _instance = this;
@@ -63,25 +69,17 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayMove();
-        if (Input.GetKeyDown(KeyCode.Q))
+
+        
+        if(isOnSkill)
         {
-            PS = PlayerState.ATTACK1;
-        }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            PS = PlayerState.ATTACK2;
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PS = PlayerState.ATTACK3;
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            PS = PlayerState.ATTACK4;
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            PS = PlayerState.DIE;
+            addSkillTime += Time.deltaTime;
+            if (addSkillTime >= 1f)
+            {
+                OnIdel();
+                addSkillTime = 0f;
+                isOnSkill = false;
+            }
         }
 
     }
@@ -145,31 +143,31 @@ public class Player : MonoBehaviour
         Vector3 joyStickVector;
         joyStickVector = gameMgr.GetJoystickVector()._joystickVector;
         isEnd = gameMgr.GetJoystickVector()._playerJoystickIsEnd;
+
         /*
         player.eulerAngles = new Vector3(player.eulerAngles.x,
-            Mathf.Atan2(JoyStick.instance.axis.x, JoyStick.instance.axis.y) * Mathf.Rad2Deg, player.eulerAngles.z);
+            Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
         player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
          */
         //bool isEnd = gameMgr.GetJoystickVector
 
-
+        
         if (!isEnd)
         {
-            PS = PlayerState.RUN;
+            //PS = PlayerState.RUN;
             player.eulerAngles = new Vector3(player.eulerAngles.x,
-                 Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
+                Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
 
             player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
-            _isMove = true;
+           // _isMove = true;
 
         }
         else
         {
-            PS = PlayerState.IDEL;
+            //PS = PlayerState.IDEL;
             _isMove = false;
         }
-
     }
 
     void OnCollisionEnter(Collision coll)
@@ -217,4 +215,54 @@ public class Player : MonoBehaviour
         }
 
     }
+        
+    public void OnRun()
+    {
+       // bool isEnd;
+
+       // Vector3 joyStickVector;
+       // joyStickVector = gameMgr.GetJoystickVector()._joystickVector;
+        //isEnd = gameMgr.GetJoystickVector()._playerJoystickIsEnd;
+
+        PS = PlayerState.RUN;
+       // player.eulerAngles = new Vector3(player.eulerAngles.x,
+       //      Mathf.Atan2(joyStickVector.x, joyStickVector.y) * Mathf.Rad2Deg, player.eulerAngles.z);
+
+        //player.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        _isMove = true;
+    }
+    public void OnIdel()
+    {
+        PS = PlayerState.IDEL;
+        _isMove = false;
+    }
+    public void OnAttackSkill()
+    {
+
+        isOnSkill = true;
+        PS = PlayerState.ATTACK1;
+        
+    }
+    public void OnSkill(int index)
+    {
+
+        isOnSkill = true;
+        
+            switch(index)
+            {
+                case 0:
+                    PS = PlayerState.ATTACK2;
+                    break;
+                case 1:
+                    PS = PlayerState.ATTACK3;
+                    break;
+                case 2:
+                    PS = PlayerState.ATTACK4;
+                    break;
+            }
+    
+        
+    }
+
+
 }
