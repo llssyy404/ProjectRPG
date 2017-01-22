@@ -57,6 +57,10 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+
+        Application.targetFrameRate = 30;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         _instance = this;
         DontDestroyOnLoad(this);        
         GameState = state.Title;
@@ -82,14 +86,13 @@ public class GameManager : MonoBehaviour
     {
         //map load
         SceneManager.LoadScene("Map01", LoadSceneMode.Additive);
-     
-
         //SceneManager.LoadScene("Map02", LoadSceneMode.Additive);
         
     }
 
     private void InitUI()
     {
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Map01"));
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Map02"));
 
         // UI load
@@ -104,7 +107,7 @@ public class GameManager : MonoBehaviour
         if (null != Player)
         {
             GameObject PlayerObject = GameObject.Instantiate(Player) as GameObject;
-            PlayerObject.transform.position = new Vector3(0, 1.75f, -20.0f);
+            PlayerObject.transform.position = new Vector3(-15.0f, 1.75f, -35.0f);
             ObjectUI objUI = PlayerObject.AddComponent<ObjectUI>();
             objUI.Init(100);
             _player = PlayerObject.GetComponent<Player>();

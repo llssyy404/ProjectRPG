@@ -33,7 +33,7 @@ public class CarCollision : MonoBehaviour {
 	}
 	public void SetDirection(float dir){
 		f_dir = dir; 
-		Debug.Log (f_dir);
+		//Debug.Log (f_dir);
 	}
 //	void OnTriggerExit(Collider col){
 //		//일단 야매코드;;
@@ -47,19 +47,19 @@ public class CarCollision : MonoBehaviour {
 
 		//transform.eulerAngles.y
 		if ((transform.eulerAngles.y <= 30.0f) && (transform.eulerAngles.y >= -30.0f)) {
-			Debug.Log ("1");
+			//Debug.Log ("1");
 			transform.rotation = Quaternion.Euler(0,0.0f,0);
 		} else if ((transform.eulerAngles.y <= 30.0f + 90.0f) && (transform.eulerAngles.y >= -30.0f + 90.0f)) {
-			Debug.Log ("2");
+			//Debug.Log ("2");
 			transform.rotation = Quaternion.Euler(0,0+90.0f,0);
 		} else if ((transform.eulerAngles.y <= 30.0f + 180.0f) && (transform.eulerAngles.y >= -30.0f + 180.0f)) {
-			Debug.Log ("3");
+			//Debug.Log ("3");
 			transform.rotation = Quaternion.Euler(0,0+180.0f,0);
 		} else if ((transform.eulerAngles.y <= 30.0f + 270.0f) && (transform.eulerAngles.y >= -30.0f + 270.0f)) {
-			Debug.Log ("4");
+			//Debug.Log ("4");
 			transform.rotation = Quaternion.Euler(0,0+270.0f,0);
 		} else {
-			Debug.Log ("Break");
+			//Debug.Log ("Break");
 
 		}
 	
@@ -77,7 +77,7 @@ public class CarCollision : MonoBehaviour {
         }
 		CorrectlyCarPos ();
 
-       Debug.Log("CompleteRotate");
+       //Debug.Log("CompleteRotate");
 
     }
 }
