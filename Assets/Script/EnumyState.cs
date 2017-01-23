@@ -10,7 +10,7 @@ public class EnumyState : MonoBehaviour
     private int _curWayPoint = 0;
     private bool _isDestination = true;
     private int _wayPointCount = 4;
-    private Transform playerTrans;
+    private Player player;
     private NavMeshAgent nav;
     private Animator anim;
     private StateMachine<EnumyState> _stateMachine;
@@ -38,7 +38,7 @@ public class EnumyState : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        playerTrans = GameManager.GetInstance().GetPlayer().transform;
+        player = GameManager.GetInstance().GetPlayer();
         _wayPoint = new Vector3[_wayPointCount];
         anim = GetComponent<Animator>();
         nav = this.gameObject.GetComponent<NavMeshAgent>();
@@ -77,8 +77,8 @@ public class EnumyState : MonoBehaviour
         if (_stateMachine.GetCurStateType() == STATE_TYPE.STATE_DIE)
             return;
 
-        float distance = GetDistanceByTargetPosition(playerTrans.position);
-        if (distance > chaseDistance)
+        float distance = GetDistanceByTargetPosition(player.transform.position);
+        if (distance > chaseDistance || player.GetHP() <= 0)
         {
             _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_PATROL));
         }

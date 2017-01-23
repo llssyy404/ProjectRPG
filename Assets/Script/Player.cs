@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
 
     // 플레이어 체력
     private int hp = 100;
+    public int GetHP() { return hp; }
 
     // 오브젝트 정보
     public ObjectInfo Info { private set; get; }
