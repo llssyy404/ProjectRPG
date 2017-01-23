@@ -48,6 +48,8 @@ public class EnumyState : MonoBehaviour
         _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_PATROL));
 
         Info = InfoManager.GetInstance().Enemy;
+
+        StartCoroutine("PlaySound");
     }
 
     private void OnTriggerEnter(Collider coll)
@@ -56,10 +58,9 @@ public class EnumyState : MonoBehaviour
         {
             SphereCollider scoll = GetComponent<SphereCollider>();
             ResourceManager.GetInstance().MakeParticle(coll.transform.position, "Hits/CFXM_GroundHit+Text", 2.0f);
-            SoundManager.GetInstance().PlayOneshotClip("sword");
+            SoundManager.GetInstance().PlayOneshotClip("Exertions/Ed_Attack_1");
             Player player = GameManager.GetInstance().GetPlayer();
             player.DamageHp(_demage);
-            Damaged(_demage);
         }
     }
 
@@ -88,6 +89,7 @@ public class EnumyState : MonoBehaviour
         else
         {
             _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_CHASE));
+            
         }
     }
 
@@ -198,5 +200,20 @@ public class EnumyState : MonoBehaviour
     //{
     //    get { return _wayPointCount; }
     //}
+
+    private IEnumerator PlaySound()
+    {
+        while(true)
+        {
+
+            if (_stateMachine.GetCurStateType() != STATE_TYPE.STATE_CHASE)
+                yield return null;
+            else
+            {
+                SoundManager.GetInstance().PlayOneshotClip("discover");
+                yield return new WaitForSeconds(2.0f);
+            }
+        }
+    }
 
 }

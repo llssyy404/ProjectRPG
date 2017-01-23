@@ -8,6 +8,8 @@ public class PlaySceneUI : MonoBehaviour {
 
     public GameObject titlePanal;
     public GameObject playPanal;
+    public GameObject clearPanal;
+    public GameObject gameOverPanal;
 
     public Image HpImg;
     public Image ExpImg;
@@ -19,8 +21,8 @@ public class PlaySceneUI : MonoBehaviour {
         if (false == GameManager.Initialized())
             return;
 
-        titlePanal.gameObject.SetActive(true);
-        playPanal.gameObject.SetActive(false);
+        SetUIState(GameManager.state.Title);
+
         _player = Player.GetInstance();        
     }
 
@@ -28,6 +30,9 @@ public class PlaySceneUI : MonoBehaviour {
     public void SetPlayerHpBar(float value)
     {
         HpImg.fillAmount = Mathf.Clamp(value, 0.0f, 1.0f);
+        
+        if(0 >= value)
+            SetUIState(GameManager.state.GameOver);
     }
 
     public void SetPlayerExpBar(float value)
@@ -37,8 +42,7 @@ public class PlaySceneUI : MonoBehaviour {
 
     public void OnClickStartButton()
     {
-        titlePanal.gameObject.SetActive(false);
-        playPanal.gameObject.SetActive(true);
+        SetUIState(GameManager.state.Play);
         GameManager.GetInstance().SetState(GameManager.state.Play);
     }
 
@@ -46,11 +50,22 @@ public class PlaySceneUI : MonoBehaviour {
     public void OnClickAttackButton()
     {
         _player.OnAttackSkill();
-       // Debug.Log("Clicked Attack");
     }
     public void OnClickSkillButton(int index)
     {
         _player.OnSkill(index);
-        //Debug.Log(string.Format("Clicked Skill {0}", index));
+    }
+    public void OnClickExitButton()
+    {
+        Application.Quit();
+    }
+
+
+    private void SetUIState(GameManager.state state)
+    {
+        titlePanal.gameObject.SetActive(state == GameManager.state.Title);
+        playPanal.gameObject.SetActive(state == GameManager.state.Play);
+        clearPanal.gameObject.SetActive(state == GameManager.state.Clear);
+        gameOverPanal.gameObject.SetActive(state == GameManager.state.GameOver);
     }
 }

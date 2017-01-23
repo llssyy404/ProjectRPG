@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     // wayPoint값으로 Enemy 위치, Patrol위치 설정
     // Enemy 인스턴싱
 
-    public enum state { Title, Play };
+    public enum state { Title, Play, GameOver, Clear};
     public state GameState { get; private set; }
 
     private CameraMgr _cameraMgr;
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     {
         if (false == _initailize)
         {
-            SceneManager.LoadScene("TestPlayScene");
+            SceneManager.LoadScene("PlayScene");
             return false;
         }
         else
