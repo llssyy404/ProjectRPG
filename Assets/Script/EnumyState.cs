@@ -18,7 +18,7 @@ public class EnumyState : MonoBehaviour
     private int _hp = 100;
     private int _demage = 10;
     private const int maxHP = 100;
-    private const float patrolSpeed = 5.0f;
+    private const float patrolSpeed = 3.0f;
     private const float chaseSpeed = 7.0f;
     private const float chaseDistance = 50.0f;
     private const float attackDistance = 5.0f;
@@ -42,9 +42,9 @@ public class EnumyState : MonoBehaviour
         _wayPoint = new Vector3[_wayPointCount];
         anim = GetComponent<Animator>();
         nav = this.gameObject.GetComponent<NavMeshAgent>();
+        _stateMachine = new StateMachine<EnumyState>();
         Init();
         WayPointInit();
-        _stateMachine = new StateMachine<EnumyState>();
         _stateMachine.Change(this, GameManager.GetInstance().enemyStateManager.GetEnemyState(STATE_TYPE.STATE_PATROL));
 
         Info = InfoManager.GetInstance().Enemy;
